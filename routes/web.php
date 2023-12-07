@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -24,6 +25,12 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
+
+Route::controller(UserController::class)
+    ->middleware(['auth', 'verified'])
+    ->group(function(){
+        Route::get('users', 'index');
+    });
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
