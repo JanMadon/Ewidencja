@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -12,8 +13,9 @@ class UserController extends Controller
      */
     public function index()
     {
+        $users = User::get();
         //dd('test');
-        return Inertia::render('UserList');
+        return Inertia::render('UsersList', ['users'=>$users]);
     }
 
     /**
@@ -43,9 +45,12 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $id = null )
     {
-        //
+        $user = User::find($id);
+        //dd($user);
+        return Inertia::render('UserEdit', ['user'=>$user]);
+        
     }
 
     /**
@@ -53,7 +58,7 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        dd($request);
     }
 
     /**

@@ -29,7 +29,12 @@ Route::get('/', function () {
 Route::controller(UserController::class)
     ->middleware(['auth', 'verified'])
     ->group(function(){
-        Route::get('users', 'index');
+        Route::get('/users', 'index')
+        ->name('users.list');
+        Route::get('/user/{id}', 'edit')
+        ->name('user.edit');
+        Route::post('/user/{id}', 'update')
+        ->name('user.update');
     });
 
 Route::get('/dashboard', function () {
