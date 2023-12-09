@@ -31,10 +31,12 @@ Route::controller(UserController::class)
     ->group(function(){
         Route::get('/users', 'index')
         ->name('users.list');
-        Route::get('/user/{id}', 'edit')
+        Route::get('/user/edit/{id}', 'edit')
         ->name('user.edit');
         Route::post('/user/{id}', 'update')
         ->name('user.update');
+        Route::get('/user/show/{id}', 'show')
+        ->name('user.show');
     });
 
 Route::get('/dashboard', function () {

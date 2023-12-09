@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->string('firstname')->default('firstname')->nullable()->after('name');
             $table->string('lastname')->default('lastname')->nullable()->after('firstname');
-            $table->boolean('premia')->default(false)->after('lastname');
-            $table->boolean('status')->default(false)->after('premia');
-            $table->string('privileges')->default('regular')->after('status');
+            $table->boolean('is_premia')->default(false)->after('lastname');
+            $table->boolean('is_active')->default(false)->after('is_premia');
+            $table->boolean('is_admin')->default(false)->after('is_active');
         });
     }
 

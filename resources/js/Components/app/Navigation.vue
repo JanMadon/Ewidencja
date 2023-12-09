@@ -13,6 +13,7 @@
                 <NavLink :href="route('dashboard')" :active="true">Dashboard</NavLink>
                 <NavLink :href="route('users.list')" :active="$page.props.route_name === 'file.sharedWithMe'">Employees</NavLink>
                 <NavLink :href="route('dashboard')" :active="$page.props.route_name === 'file.sharedByMe'">Change history</NavLink>
+                <NavLink :href="route('dashboard')" :active="$page.props.route_name === 'file.sharedByMe'">Recent Log</NavLink>
                 <NavLink :href="route('dashboard')" :active="$page.props.route_name === 'trash'">Trash</NavLink>
             </div>
         </div>

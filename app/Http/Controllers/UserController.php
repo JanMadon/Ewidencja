@@ -39,7 +39,9 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        //
+        
+        return Inertia::render('UserShow', ['id'=>$id]);
+
     }
 
     /**
@@ -48,7 +50,6 @@ class UserController extends Controller
     public function edit(string $id = null )
     {
         $user = User::find($id);
-        //dd($user);
         return Inertia::render('UserEdit', ['user'=>$user]);
         
     }
@@ -58,6 +59,7 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        // TO DO VALIDACJA I UPDATE DB
         dd($request);
     }
 

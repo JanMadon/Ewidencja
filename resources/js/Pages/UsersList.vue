@@ -42,7 +42,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(user, index) of users" :class="{ 'bg-gray-100': index % 2 === 1 }"
+                    <tr v-for="(user, index) of users" :class="{ 'bg-gray-100': index % 2 === 1 }" @dblclick="showUser(user.id)"
                         class="bg-white border-b transition duration-300 ease-in-out hover:bg-blue-100 cursor-pointer">
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                             Checkbox
@@ -50,7 +50,7 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                             {{ user.id }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 flex items-center">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 ">
                             {{ user.name }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 ">
@@ -63,13 +63,13 @@
                             {{ user.email }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 ">
-                            {{ user.premia }}
+                            {{ user.is_premia ? 'Yes' : 'No' }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 ">
-                            {{ user.status }}
+                            {{ user.is_active ? 'Active' : 'Not active' }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 ">
-                            {{ user.privileges }}
+                            {{ user.is_admin  ? 'Admin' : 'Regular' }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 ">
                             <PrimaryButton @click="redirectToUserEdit(user.id)">Edit</PrimaryButton>
@@ -78,7 +78,6 @@
                 </tbody>
             </table>
             <div class="py-8 text-center text-sm text-gray-400">
-                {{ users }}
             </div>
             <div ref="loadMoreIntersect"></div>
         </div>
@@ -97,6 +96,10 @@ const props = defineProps({
 function redirectToUserEdit(id){
     console.log(id);
     router.visit(route('user.edit', id));
+}
+
+function showUser(id){
+    router.visit(route('user.show', id));
 }
 
 
