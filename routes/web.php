@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LogController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
@@ -37,6 +38,15 @@ Route::controller(UserController::class)
         ->name('user.update');
         Route::get('/user/show/{id}', 'show')
         ->name('user.show');
+    });
+
+Route::controller(LogController::class)
+    ->middleware(['auth', 'verified'])
+    ->group(function(){
+        Route::get('/log', 'list')
+        ->name('log.list');
+        Route::post('/log', 'setLog')
+        ->name('log.set');
     });
 
 Route::get('/dashboard', function () {

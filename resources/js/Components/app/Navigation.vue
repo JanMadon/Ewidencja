@@ -10,10 +10,10 @@
             <!-- <CreateNewDropdown /> -->
             <div class="py-3 ">
                 <!-- <pre>{{$page}}</pre> -->
-                <NavLink :href="route('dashboard')" :active="true">Dashboard</NavLink>
-                <NavLink :href="route('users.list')" :active="$page.props.route_name === 'file.sharedWithMe'">Employees</NavLink>
+                <NavLink :href="route('dashboard')" :active="$page.props.route_name === 'dashboard'">Dashboard</NavLink>
+                <NavLink :href="route('users.list')" :active="$page.props.route_name === 'users.list'">Employees</NavLink>
+                <NavLink :href="route('log.list')" :active="$page.props.route_name === 'log.list'">Log List</NavLink>
                 <NavLink :href="route('dashboard')" :active="$page.props.route_name === 'file.sharedByMe'">Change history</NavLink>
-                <NavLink :href="route('dashboard')" :active="$page.props.route_name === 'file.sharedByMe'">Recent Log</NavLink>
                 <NavLink :href="route('dashboard')" :active="$page.props.route_name === 'trash'">Trash</NavLink>
             </div>
         </div>
