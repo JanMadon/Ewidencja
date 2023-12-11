@@ -47,6 +47,8 @@ Route::controller(LogController::class)
         ->name('log.list');
         Route::post('/log', 'setLog')
         ->name('log.set');
+        Route::post('/user/show/{id}', 'UserLogs')
+        ->name('log.user');
     });
 
 Route::get('/dashboard', function () {

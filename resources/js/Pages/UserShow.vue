@@ -1,7 +1,9 @@
 <template>
     <AuthenticatedLayout>
         <nav class="flex items-center justify-between p-1 bm-3">
-            <p>nawigacja</p>
+            <p>
+                <ChangeMonth @period="dateFromChangeMontchComponent" />
+            </p>
             <p>nawigacja</p>
         </nav>
         <div class="flex-1 overflow-auto">
@@ -21,7 +23,7 @@
                             Exit
                         </th>
                         <th class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                            Breaks
+                            Logs
                         </th>
                         <th class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
                             Working time
@@ -33,25 +35,26 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="bg-white border-b ">
+                    <tr v-for="(dayData, index) of daysData" :key="index" class="bg-white border-b ">
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            Checkbox
+                            {{ (Object.keys(daysData)).indexOf(index) + 1 }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            2-10-2020
+                            {{ index }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 ">
-                            08:41:25
+                            {{ dayData.logs[0] }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 ">
-                            18:41:25
+                            {{ dayData.logs[dayData.logs.length - 1] }}
                         </td>
-                        <td @click="showModal"
-                            class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 transition duration-300 ease-in-out hover:bg-blue-100 cursor-pointer text-center">
-                            Breaks(eror)
+                        <td @click="showModal([index, dayData])"
+                            class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 transition duration-300 ease-in-out hover:bg-blue-100 cursor-pointer text-center"
+                            :class="{ 'bg-red-200': dayData.logs.length % 2 }">
+                            {{ dayData.logs.length / 2 }} {{ dayData.logs.length % 2 ? "(error)" : "" }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 ">
-                            8:15:13
+                            {{ dayData.work_time }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 ">
                             +
@@ -61,21 +64,33 @@
                 </tbody>
             </table>
             <div class="py-8 text-center text-sm text-gray-400">
+                {{ id }}
+                <br>
+                {{ daysData }}
             </div>
             <div ref="loadMoreIntersect"></div>
         </div>
         <Modal :show="isVisible">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-900">
-                    Breaks: 25-06-2002
+                    Date: {{ dayData[0] }}
                 </h2>
-
-                <div class="flex flex-col  mb-4">
-                    <div class="text-center  p-2">Enter:
-                        <strong>12:25:11</strong>
+                <div class="flex justify-evenly mb-4">
+                    <div>
+                        <div class="text-center  p-2">Enter:
+                            <strong>{{ dayData[1].logs[0] }}</strong>
+                        </div>
+                        <div class="p-2">Exit:
+                            <strong>{{ dayData[1].logs[dayData[1].logs.length - 1] }}</strong>
+                        </div>
                     </div>
-                    <div class=" text-center  p-2">Exit:
-                        <strong>12:25:11</strong>
+                    <div >
+                        <div class="text-center  p-2">Time at work:
+                            <strong>{{ dayData[1].time }}</strong>
+                        </div>
+                        <div class="   p-2">Break time:
+                            <strong>{{ dayData[1].break_time }}</strong>
+                        </div>
                     </div>
                 </div>
 
@@ -92,37 +107,25 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            <tr v-for="(log, index) in dayData[1].logs">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    1
+                                    {{ index + 1 }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    12:25:33
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    1
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    12:25:33
+                                    {{ log }}
                                 </td>
                             </tr>
-                            
                         </tbody>
                     </table>
-                    <form @submit.prevent="submitForm()" class=" flex flex-col justify-end items-center ">
+                    <form @submit.prevent="addNewLog(dayData[0])" class=" flex flex-col justify-end items-center ">
                         <label for="appt">Set new record:</label>
-                        <input v-model=formData.newRecord type="time" id="appt" name="appt" 
-                            required />
+                        <input v-model=formData.newRecord type="time" id="appt" name="appt" required />
                         <div class="mt-6 flex justify-end mt-20">
                             <SecondaryButton @click.prevent="closeModal">Cancel</SecondaryButton>
                             <PrimaryButton class="ms-3">Add record</PrimaryButton>
                         </div>
                     </form>
-
                 </div>
-
             </div>
 
         </Modal>
@@ -135,36 +138,53 @@ import Modal from '@/Components/Modal.vue'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { router, useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, toRaw } from 'vue';
 import UserBreaks from '@/Components/app/UserBreaks.vue';
+import ChangeMonth from '@/Components/app/ChangeMonth.vue';
 
 const props = defineProps({
-    users: Object,
+    id: String,
+    daysData: Object,
 })
 
 const formData = useForm({
     newRecord: null,
+    date: ''
 })
 
 const isVisible = ref(false);
+const dayData = ref({});
+let loop = ref(0);
 
-function showModal() {
+
+function showModal(dayData) {
+    this.dayData = dayData
     isVisible.value = true;
 }
+
 function closeModal() {
+    dayData.value = {};
     isVisible.value = false;
 }
-function submitForm() {
-    console.log(formData.newRecord)
-    formData.post(route())
+function addNewLog(date) {
+    // sprawdz czy takiego loga jużnie ma tego dnia
+    console.log(date);
+    console.log(formData.newRecord);
+    formData.post(route('add.log', props.id), {date })
+
+    formData.newRecord = null;
+    closeModal();
 }
-// const submitForm = () => {
-//     console.log('jestem')
-//     formData.post();
-// };
 
+const dateFromChangeMontchComponent = (period) => {
 
+    console.log(period);
+    router.post(route('log.user', props.id), { 'date': period });
+}
 
+function counter() {
+
+}
 
 </script>
 

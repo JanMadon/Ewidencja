@@ -2,11 +2,7 @@
     <AuthenticatedLayout>
         <nav class="flex items-center justify-between p-1 bm-3">
             <p>
-            <div>
-                <SecondaryButton @click="moveMonth(-1)">Previous month</SecondaryButton>
-                <span>{{ currentMonth }}</span>
-                <SecondaryButton @click="moveMonth(1)">Next month</SecondaryButton>
-            </div>
+            <ChangeMonth @date="dateFromChangeMontchComponent"/>
             </p>
             <PrimaryButton @click="updateLog">update log</PrimaryButton>
         </nav>
@@ -68,8 +64,9 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { router } from '@inertiajs/vue3';
 import { ref, onMounted } from 'vue';
+import ChangeMonth from '@/Components/app/ChangeMonth.vue'
 
-const currentDate = ref(new Date());
+const setTime = ref('')
 
 const props = defineProps({
     logs: Object
@@ -80,35 +77,12 @@ function updateLog() {
     router.post(route('log.set'));
 }
 
-// Format date as "MMMM YYYY"
-const formatDate = (date) => {
-    prepereDateForBackend(date)
-    console.log(date)
-    const options = { month: 'long', year: 'numeric' };
-    return new Intl.DateTimeFormat('en-US', options).format(date);
-};
-
-// Current month in "MMMM YYYY" format
-const currentMonth = ref(formatDate(currentDate.value));
-
-// Function to move to the next or previous month
-const moveMonth = (number) => {
-    currentDate.value.setMonth(currentDate.value.getMonth() + number);
-    currentMonth.value = formatDate(currentDate.value);
-};
-
-function prepereDateForBackend(date) {
-    let year = date.getFullYear();
-    let month = ('0' + (date.getMonth() + 1)).slice(-2);
-    let day = ('0' + date.getDate()).slice(-2);
-    let hours = ('0' + date.getHours()).slice(-2);
-    let minutes = ('0' + date.getMinutes()).slice(-2);
-    let seconds = ('0' + date.getSeconds()).slice(-2);
-
-    let secondDate = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
-
-    console.log(secondDate);
+const dateFromChangeMontchComponent = (date) => {
+    setTime.value = date
 }
+
+
+
 
 </script>
 
