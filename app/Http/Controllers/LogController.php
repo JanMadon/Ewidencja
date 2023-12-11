@@ -13,6 +13,11 @@ use Termwind\Components\Raw;
 
 class LogController extends Controller
 {
+
+    public function logAdd(Request $reguest){
+         dd($reguest['newRecord']);
+    }
+
     public function list()
     {
         $logs = RawLogs::get();
@@ -20,7 +25,7 @@ class LogController extends Controller
         return Inertia::render('LogList', ['logs' => $logs]);
     }
 
-    public function UserLogs(Request $request, string $id)
+    public function userLogs(Request $request, string $id)
     {
         $timeFrom = $request['date'];
         $timeTo = Carbon::parse($timeFrom)->addMonth()->format('Y-m-d');

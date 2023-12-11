@@ -119,7 +119,7 @@
                     </table>
                     <form @submit.prevent="addNewLog(dayData[0])" class=" flex flex-col justify-end items-center ">
                         <label for="appt">Set new record:</label>
-                        <input v-model=formData.newRecord type="time" id="appt" name="appt" required />
+                        <input v-model=formData.newRecord :formDate.date="dayData[0]"   type="time" id="appt" name="appt" required />
                         <div class="mt-6 flex justify-end mt-20">
                             <SecondaryButton @click.prevent="closeModal">Cancel</SecondaryButton>
                             <PrimaryButton class="ms-3">Add record</PrimaryButton>
@@ -149,12 +149,11 @@ const props = defineProps({
 
 const formData = useForm({
     newRecord: null,
-    date: ''
 })
 
 const isVisible = ref(false);
 const dayData = ref({});
-let loop = ref(0);
+
 
 
 function showModal(dayData) {
@@ -166,25 +165,22 @@ function closeModal() {
     dayData.value = {};
     isVisible.value = false;
 }
-function addNewLog(date) {
+function addNewLog(day) {
     // sprawdz czy takiego loga jużnie ma tego dnia
-    console.log(date);
-    console.log(formData.newRecord);
-    formData.post(route('add.log', props.id), {date })
+    // console.log(date);
+    // formData.data.value = date;
+    // console.log(formData.data);
+    router.post(route('log.add', props.id), {'newRecord': day +' '+  formData.newRecord})
 
     formData.newRecord = null;
     closeModal();
 }
 
-const dateFromChangeMontchComponent = (period) => {
 
-    console.log(period);
+const dateFromChangeMontchComponent = (period) => {
     router.post(route('log.user', props.id), { 'date': period });
 }
 
-function counter() {
-
-}
 
 </script>
 
