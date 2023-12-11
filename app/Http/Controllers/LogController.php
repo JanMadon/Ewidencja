@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AddedLogs;
+use App\Models\DeletedLogs;
 use App\Models\RawLogs;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
@@ -15,13 +17,23 @@ class LogController extends Controller
 {
 
     public function logAdd(Request $reguest){
-         dd($reguest['newRecord']);
+
+        // tzeba zrobić walidacja która sprawdza czy DANY user nie dodał już logu o danej godzinie i czy nie ma tej godziny w RawLog 
+        // id jest wysyłane w url, wiec to raczej dla admina
+
+        $data = [
+            'date_time' => $reguest->newRecord,
+            'employee_id' => $reguest->id,
+            'is_active' => true,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ];
+         AddedLogs::insert($data);
     }
 
     public function list()
     {
         $logs = RawLogs::get();
-
         return Inertia::render('LogList', ['logs' => $logs]);
     }
 
@@ -30,15 +42,33 @@ class LogController extends Controller
         $timeFrom = $request['date'];
         $timeTo = Carbon::parse($timeFrom)->addMonth()->format('Y-m-d');
         
-        // dd($timeFrom,  $timeTo);
+        //  dd($timeFrom,  $timeTo);
 
 
-        $logs = RawLogs::select('date_time')
-            ->where('date_time', '>', $timeFrom)
-            ->where('date_time', '<', $timeTo)
-            ->where('employee_id', 1)
+        // $logs = RawLogs::select('date_time')
+        //     ->where('date_time', '>', $timeFrom)
+        //     ->where('date_time', '<', $timeTo)
+        //     ->where('employee_id', $id)
+        //     ->orderBy('date_time')
+        //     ->get()->toArray();
+
+            $logs = RawLogs::select('date_time')
+            ->where('raw_logs.date_time', '>', $timeFrom)
+            ->where('raw_logs.date_time', '<', $timeTo)
+            ->where('raw_logs.employee_id', $id)
+            ->union(AddedLogs::select('date_time')
+                            ->where('employee_id', $id)
+                            ->where('is_approved', true)
+                            ->where('is_active', true)
+                            )
             ->orderBy('date_time')
             ->get()->toArray();
+
+            // $deletedLogs = DeletedLogs::select('date_time')
+            //                     ->where('is_approved', true)
+            //                     ->where('is_active', true)
+            //                     ->get()->toArray();
+              dd($logs);
 
 
         $daysLogs = [];
@@ -134,7 +164,7 @@ class LogController extends Controller
     {
 
         $rowFormat = '/^\d{10}\s+\d{4}\/\d{2}\/\d{2}\s+\d{2}:\d{2}:\d{2}$/';
-        $logs = Storage::get('list.txt');
+        $logs = Storage::get('list3.txt');
         $rows = explode("\n", $logs);
         $data = [];
         $keys = ['employee_id', 'date_time'];
