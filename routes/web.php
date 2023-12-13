@@ -32,8 +32,10 @@ Route::controller(UserController::class)
     ->group(function(){
         Route::get('/users', 'index')
         ->name('users.list');
-        Route::get('/users/requests', 'requests')
+        Route::get('/users/requests', 'requestsList')
         ->name('users.requests');
+        Route::post('/users/requests', 'requestAccept')
+        ->name('request.accept');
         Route::get('/user/edit/{id}', 'edit')
         ->name('user.edit');
         Route::post('/user/{id}', 'update')

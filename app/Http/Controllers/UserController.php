@@ -10,26 +10,27 @@ use Inertia\Inertia;
 use Spatie\LaravelIgnition\FlareMiddleware\AddLogs;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $users = User::get();
         //dd('test');
-        return Inertia::render('UsersList', ['users'=>$users]);
+        return Inertia::render('UsersList', ['users' => $users]);
     }
 
-    public function requests(Request $request)
+    public function requestsList(Request $request)
     {
-        $usersRequests=[];
+        //można by sprawdzać jaki user jest zalogowany 
+        $usersRequests = [];
 
-        $data = AddedLogs::get()->toArray();
-        // dd($data);
-        foreach($data as $log) {
+        $data = AddedLogs::orderBy('id', 'desc')
+            ->get()
+            ->toArray();
+
+        foreach ($data as $log) {
             $usersRequests[] = [
                 'logId' => $log['id'],
                 'userId' => $log['employee_id'],
@@ -39,16 +40,39 @@ class UserController extends Controller
                 'createdAt' => Carbon::parse($log['created_at'])->format('Y-m-d H:i:s'),
             ];
         }
-         $usersRequests1 = $this->arrPaginate($usersRequests, 10);
-         $usersRequests1->setPath($request->url());
-        
-            // dd($usersRequests);
-        
-        
-        return Inertia::render('UsersRequests', ['usersRequests'=>$usersRequests1]);    
+        $usersRequests1 = $this->arrPaginate($usersRequests, 10);
+        $usersRequests1->setPath($request->url());
+
+        return Inertia::render('UsersRequests', ['usersRequests' => $usersRequests1]);
     }
 
-    public function arrPaginate($array, $perPage = 5, $page = null ) {
+    public function requestAccept(Request $request)
+    {
+
+        if ($request->action === 'accpet') {
+            $log = AddedLogs::find($request->requestId);
+            $log->approved_by = Auth::id();
+            $log->is_approved = true;
+            $log->save();
+        } elseif ($request->action === 'reject') {
+            $log = AddedLogs::find($request->requestId);
+            $log->approved_by = Auth::id();
+            $log->is_approved = false;
+            $log->save();
+        } elseif ($request->action === 'undo') {
+            $log = AddedLogs::find($request->requestId);
+            $log->approved_by = null;
+            $log->is_approved = false;
+            $log->save();
+        } else {
+            // throw an exception
+        }
+
+        return to_route('users.requests');
+    }
+
+    public function arrPaginate($array, $perPage = 5, $page = null)
+    {
         $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
         $total = count($array);
         $currentPage = $page;
@@ -61,8 +85,8 @@ class UserController extends Controller
     {
         $log = AddedLogs::find($logId);
 
-        if($log->is_approved && $log->approved_by) return 'accpeted';
-        if(!$log->is_approved && $log->approved_by) return 'rejected';
+        if ($log->is_approved && $log->approved_by) return 'accpeted';
+        if (!$log->is_approved && $log->approved_by) return 'rejected';
 
         return 'waiting';
     }
@@ -88,19 +112,17 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        
-        return Inertia::render('UserShow', ['id'=>$id]);
 
+        return Inertia::render('UserShow', ['id' => $id]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id = null )
+    public function edit(string $id = null)
     {
         $user = User::find($id);
-        return Inertia::render('UserEdit', ['user'=>$user]);
-        
+        return Inertia::render('UserEdit', ['user' => $user]);
     }
 
     /**

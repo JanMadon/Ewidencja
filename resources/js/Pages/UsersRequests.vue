@@ -9,6 +9,9 @@
                 <thead class="text-center bg-gray-300 border-b">
                     <tr>
                         <th class="text-sm font-medium text-gray-900 px-6 py-4 text-center">
+                            LP
+                        </th>
+                        <th class="text-sm font-medium text-gray-900 px-6 py-4 text-center">
                             Request ID
                         </th>
                         <th class="text-sm font-medium text-gray-900 px-6 py-4 text-center">
@@ -29,19 +32,19 @@
 
                     </tr>
                 </thead>
-                <tbody>            
-                    <tr v-for="(userRequests, index) of usersRequests.data" :class="{ 'bg-gray-200': index % 2 === 1 }"
-                       >
+                <tbody>
+                    <tr v-for="(userRequests, index) of usersRequests.data" :class="{'bg-red-100': userRequests.status === 'rejected', 'bg-green-100': userRequests.status === 'accpeted'} " >
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            {{ index+1 }}
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                             {{ userRequests.logId }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            {{ userRequests.userName ?? 'unown, id=' + userRequests.userId}}
-                            <!-- {{ log.user ? log.user.name : 'unknown' }} -->
-
+                            {{ userRequests.userName ?? 'unown, id=' + userRequests.userId }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 ">
-                            {{ userRequests.approvedBy}}
+                            {{ userRequests.approvedBy }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 ">
                             {{ userRequests.status }}
@@ -49,10 +52,18 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 ">
                             {{ userRequests.createdAt }}
                         </td>
-                        <td class=" py-4 whitespace-nowrap text-sm font-medium text-gray-900 ">
-                            <PrimaryButton class="scale-90" @click="redirectToUserEdit(user.id)">Accept</PrimaryButton>
-                            <DangerButton class="scale-90" @click="redirectToUserEdit(user.id)">Reject</DangerButton>
+                        <td v-if="!userRequests.approvedBy" class=" py-4 whitespace-nowrap text-sm font-medium text-gray-900 ">
+                            <PrimaryButton class="scale-90" @click.prevent="acceptRequest(userRequests.logId)">
+                                Accept
+                            </PrimaryButton>
+                            <DangerButton class="scale-90" @click.prevent="rejectRequest(userRequests.logId)">Reject</DangerButton>
                         </td>
+                        <td v-else class=" py-4 whitespace-nowrap text-center font-medium text-gray-900 ">
+                            <SecondaryButton class="scale-90" @click.prevent="undoRequest(userRequests.logId)">
+                                Undo
+                            </SecondaryButton>
+                        </td>
+
                     </tr>
                 </tbody>
             </table>
@@ -61,12 +72,12 @@
             <Link
                 class="mx-5 inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150"
                 v-if="usersRequests.prev_page_url" :href="usersRequests.prev_page_url">
-                Prev page
+            Prev page
             </Link>
             <Link
                 class="mx-5 inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150"
                 v-if="usersRequests.next_page_url" :href="usersRequests.next_page_url">
-                Next page
+            Next page
             </Link>
         </div>
     </AuthenticatedLayout>
@@ -75,6 +86,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import { Link, router } from '@inertiajs/vue3';
 
@@ -83,11 +95,31 @@ const props = defineProps({
     usersRequests: Object,
 })
 
-function redirectToUserEdit(id){
-    router.visit(route('user.edit', id));
+function acceptRequest(requestId) {
+    router.post(route('request.accept'), {
+        'action' : 'accpet',
+        'requestId': requestId,
+
+    });
 }
 
-function showUser(id){
+function rejectRequest(requestId) {
+    router.post(route('request.accept'), {
+        'action' : 'reject',
+        'requestId': requestId,
+
+    });
+}
+
+function undoRequest(requestId) {
+    router.post(route('request.accept'), {
+        'action' : 'undo',
+        'requestId': requestId,
+
+    });
+}
+
+function showUser(id) {
     router.visit(route('user.show', id));
 }
 
