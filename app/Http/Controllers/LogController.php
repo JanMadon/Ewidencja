@@ -15,8 +15,20 @@ use Termwind\Components\Raw;
 
 class LogController extends Controller
 {
+    public function list()
+    {
+         $logs = RawLogs::with('user')->orderBy('date_time', 'desc')->simplePaginate(15);
+         
+        //  ->get();
 
-    public function logAdd(Request $reguest){
+        //$logs = RawLogs::simplePaginate(5);
+       
+         //$logs = RawLogs::where('employee_id', 2)->first()->user()->first();
+         // dd($logs);
+        return Inertia::render('LogList', ['logs' => $logs]);
+    }
+
+    public function logAdd(Request $reguest, string $id){
 
         // tzeba zrobić walidacja która sprawdza czy DANY user nie dodał już logu o danej godzinie i czy nie ma tej godziny w RawLog 
         // id jest wysyłane w url, wiec to raczej dla admina
@@ -29,16 +41,16 @@ class LogController extends Controller
             'updated_at' => Carbon::now(),
         ];
          AddedLogs::insert($data);
+         
+
+         return to_route('user.show', [$id]);
     }
 
-    public function list()
-    {
-        $logs = RawLogs::get();
-        return Inertia::render('LogList', ['logs' => $logs]);
-    }
+   
 
     public function userLogs(Request $request, string $id)
     {
+        // $id = 14;
         $timeFrom = $request['date'];
         $timeTo = Carbon::parse($timeFrom)->addMonth()->format('Y-m-d');
         
@@ -68,7 +80,7 @@ class LogController extends Controller
             //                     ->where('is_approved', true)
             //                     ->where('is_active', true)
             //                     ->get()->toArray();
-              dd($logs);
+            //   dd($logs);
 
 
         $daysLogs = [];
@@ -77,7 +89,7 @@ class LogController extends Controller
             list($date, $time) = explode(' ', $dateTime);
             $daysLogs[$date]['logs'][] = $time;
         }
-
+        // dd($daysLogs);
 
         //czy poprawna liczba rekordów danego dnia 
         foreach ($daysLogs as $date => $Logs) {
@@ -130,15 +142,15 @@ class LogController extends Controller
                 }
             }
 
-            // Czy przysługuje premia? *gdy nie ma odmidzia miedz 9-10 *jeżeli wszytkie logi są po 9(czyli 1)
+            // Czy przysługuje premia? *gdy nie ma odbicia miedz 9-10 *jeżeli wszytkie logi są po 9(czyli 1)
             // *gdy ostatni log jest przed 9
             $daysLogs[$date]['premia'] = true;
             foreach ($daysLogs[$date]['logs'] as $key => $log) {
                 if ("09:00:00" < $log && $log < "10:00:00") {
                     $daysLogs[$date]['premia'] = false;
                 }
-
-                if ($key % 2 !== 0) {
+                // dump($daysLogs[$date]['num_logs'] );
+                if ($key % 2 !== 0  && isset($daysLogs[$date]['logs'][$key + 1])) {
                     if ($daysLogs[$date]['logs'][$key] < "09:00:00" && $daysLogs[$date]['logs'][$key + 1] > "09:00:00") {
                         $daysLogs[$date]['premia'] = false;
                     }
@@ -164,7 +176,7 @@ class LogController extends Controller
     {
 
         $rowFormat = '/^\d{10}\s+\d{4}\/\d{2}\/\d{2}\s+\d{2}:\d{2}:\d{2}$/';
-        $logs = Storage::get('list3.txt');
+        $logs = Storage::get('list.txt');
         $rows = explode("\n", $logs);
         $data = [];
         $keys = ['employee_id', 'date_time'];

@@ -51,7 +51,7 @@
                         <td @click="showModal([index, dayData])"
                             class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 transition duration-300 ease-in-out hover:bg-blue-100 cursor-pointer text-center"
                             :class="{ 'bg-red-200': dayData.logs.length % 2 }">
-                            {{ dayData.logs.length / 2 }} {{ dayData.logs.length % 2 ? "(error)" : "" }}
+                            {{ dayData.logs.length }} {{ dayData.logs.length % 2 ? "(error)" : "" }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 ">
                             {{ dayData.work_time }}
