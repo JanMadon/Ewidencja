@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\Admin;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -27,35 +29,55 @@ Route::get('/', function () {
     ]);
 });
 
-Route::controller(UserController::class)
-    ->middleware(['auth', 'verified'])
+Route::controller(AdminController::class)
+    ->middleware(['auth', 'verified', 'admin'])
     ->group(function(){
-        Route::get('/users', 'index')
+        Route::get('/users', 'List')
         ->name('users.list');
+        Route::get('/user/logs/{id}', 'userLogs')
+        ->name('user.logs');
+        Route::post('/user/logs/{id}', 'userLogsPeriod')
+        ->name('user.logs.period');
+        Route::put('/user/logs/{id}', 'addLog')
+        ->name('addLog');
+        Route::get('/user/edit/{id}', 'edit')
+        ->name('user.edit');
+        Route::post('/user/edit/{id}', 'update')
+        ->name('user.update');
         Route::get('/users/requests', 'requestsList')
         ->name('users.requests');
         Route::post('/users/requests', 'requestAccept')
         ->name('request.accept');
-        Route::get('/user/edit/{id}', 'edit')
-        ->name('user.edit');
-        Route::post('/user/{id}', 'update')
-        ->name('user.update');
-        Route::get('/user/show/{id}', 'show')
-        ->name('user.show');
     });
 
+// Route::controller(UserController::class)
+// ->middleware(['auth', 'verified'])
+// ->group(function(){
+//     Route::get('/user/logs', 'userLogs')
+//     ->name('user.logs.list');
+//     Route::post('/user/logs', 'userLogsPeriod')
+//     ->name('user.logs.period');
+//     Route::put('/user/logs', 'addLog')
+//     ->name('addLog');
+//     Route::get('/user/edit/{id}', 'edit')
+//     ->name('user.edit');
+//     Route::post('/user/{id}', 'update')
+//     ->name('user.update');
+//     Route::get('/users/requests', 'requestsList')
+//     ->name('users.requests');
+//     Route::post('/users/requests', 'requestAccept')
+//     ->name('request.accept');
+// });
+
+
+
 Route::controller(LogController::class)
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth', 'verified', 'admin'])
     ->group(function(){
         Route::get('/log', 'list')
         ->name('log.list');
         Route::post('/log', 'setLog')
         ->name('log.set');
-        Route::post('/user/show/{id}', 'userLogs')
-        ->name('log.user');
-        Route::post('/user/add/{id}', 'logAdd')
-        ->name('log.add');
-        
     });
 
 Route::get('/dashboard', function () {

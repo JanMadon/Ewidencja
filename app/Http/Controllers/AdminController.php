@@ -13,24 +13,44 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 
-class UserController extends Controller
+class AdminController extends Controller
 {
     public function list()
     {
         $users = User::get();
-        return Inertia::render('UsersList', ['users' => $users]);
+        return Inertia::render('Admin/UsersList', ['users' => $users]);
     }
 
-    public function userLogs()
+    public function create()
     {
-        return Inertia::render('UserLogs', [
-            'id' => Auth::id(),
-        ]);
+        //
     }
 
-    public function userLogsPeriod(Request $request)
+    public function edit(string $id = null)
     {
-        $id = Auth::id();
+        $user = User::find($id);
+        return Inertia::render('Admin/UserEdit', ['user' => $user]);
+    }
+
+    public function update(Request $request, string $id)
+    {
+        // TO DO VALIDACJA I UPDATE DB
+        dd($request);
+    }
+
+    public function destroy(string $id)
+    {
+        //
+    }
+
+    public function userLogs(Request $request, string $id)
+    {
+        return Inertia::render('Admin/UserLogs', ['id' => $id]);
+    }
+
+
+    public function userLogsPeriod(Request $request, string $id)
+    {
         $timeFrom = $request['date'] ?? Carbon::now()->format('Y-m-01');
         $timeTo = Carbon::parse($timeFrom)->addMonth()->format('Y-m-d');
         //dd($timeFrom, $timeTo);
@@ -38,24 +58,25 @@ class UserController extends Controller
         $daysLogs = $this->getDataForUser($id, $timeFrom, $timeTo);
         //dd($daysLogs);
 
-        return Inertia::render('UserLogs', [
+        return Inertia::render('Admin/UserLogs', [
             'id' => $id,
             'setTime' => [$timeFrom, $timeTo],
             'daysData' => $daysLogs,
         ]);
     }
 
-    public function addLog(Request $reguest)
+    public function addLog(Request $reguest, string $id)
     {
+
         // tzeba zrobić walidacja która sprawdza czy DANY user nie dodał już logu o danej godzinie i czy nie ma tej godziny w RawLog 
         // id jest wysyłane w url, wiec to raczej dla admina
-        $id = Auth::id();
+
         $data = [
             'date_time' => $reguest->newRecord,
             'employee_id' => $reguest->id,
             'is_active' => true,
-            'is_approved' => false,
-            'approved_by' => '',
+            'is_approved' => true,
+            'approved_by' => Auth::id(),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ];
@@ -64,7 +85,7 @@ class UserController extends Controller
 
         // return redirect()->route('user.logs', ['id' => $id])->with('added', 'Wpis zaktualizowany pomyślnie');
         //return to_route('user.logs.period', ['id' => $id]);
-        return Inertia::render('UserLogs', [
+        return Inertia::render('Admin/UserLogs', [
             'id' => $id,
             'recordAdded' => $reguest->newRecord
         ]);
@@ -92,7 +113,7 @@ class UserController extends Controller
         $usersRequests1 = $this->arrPaginate($usersRequests, 10);
         $usersRequests1->setPath($request->url());
 
-        return Inertia::render('UsersRequests', ['usersRequests' => $usersRequests1]);
+        return Inertia::render('Admin/UsersRequests', ['usersRequests' => $usersRequests1]);
     }
 
     public function requestAccept(Request $request)
@@ -120,7 +141,7 @@ class UserController extends Controller
         return to_route('users.requests');
     }
 
-    public function arrPaginate($array, $perPage = 5, $page = null)
+    protected function arrPaginate($array, $perPage = 5, $page = null)
     {
         $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
         $total = count($array);
@@ -130,7 +151,7 @@ class UserController extends Controller
         return new LengthAwarePaginator($itemsToShow, $total, $perPage);
     }
 
-    public function AddedLogStatus($logId): string
+    protected function AddedLogStatus($logId): string
     {
         $log = AddedLogs::find($logId);
 
@@ -138,28 +159,6 @@ class UserController extends Controller
         if (!$log->is_approved && $log->approved_by) return 'rejected';
 
         return 'waiting';
-    }
-
-    public function create()
-    {
-        //narazie jest przez rejstracje twozenie userów ,,
-    }
-
-    public function edit(string $id = null)
-    {
-        $user = User::find($id);
-        return Inertia::render('UserEdit', ['user' => $user]);
-    }
-
-    public function update(Request $request, string $id)
-    {
-        // TO DO VALIDACJA I UPDATE DB
-        dd($request);
-    }
-
-    public function destroy(string $id)
-    {
-        //
     }
 
     protected function getDataForUser(String $id, $timeFrom, $timeTo,): array

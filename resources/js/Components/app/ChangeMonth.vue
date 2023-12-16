@@ -1,8 +1,8 @@
 <template>
     <div>
-        <SecondaryButton @click="moveMonth(-1)">Previous month</SecondaryButton>
+        <SecondaryButton @click.prevent="moveMonth(-1)">Previous month</SecondaryButton>
         <span>{{ currentMonth }}</span>
-        <SecondaryButton @click="moveMonth(1)">Next month</SecondaryButton>
+        <SecondaryButton @click.prevent="moveMonth(1)">Next month</SecondaryButton>
     </div>
 </template>
 

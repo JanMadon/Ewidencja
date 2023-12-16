@@ -8,15 +8,23 @@
         </div>
         <div class="px-3">
             <!-- <CreateNewDropdown /> -->
-            <div class="py-3 ">
-                <!-- <pre>{{$page}}</pre> -->
-                <NavLink :href="route('dashboard')" :active="$page.props.route_name === 'dashboard'">Dashboard</NavLink>
+            <div v-if="$page.props.auth.user.is_admin" class="py-3 ">
+                <!-- <pre>{{$page.props.auth.user.is_admin}}</pre> -->
+                <NavLink :href="route('dashboard')" :active="$page.props.route_name === 'dashboard'">Admin Dashboard</NavLink>
                 <NavLink :href="route('users.list')" :active="$page.props.route_name === 'users.list'">Employees</NavLink>
-                <NavLink :href="route('users.requests')" :active="$page.props.route_name === 'users.requests'">Requests</NavLink>
+                <NavLink :href="route('users.requests')" :active="$page.props.route_name === 'users.requests'">Users requests</NavLink>
                 <NavLink :href="route('log.list')" :active="$page.props.route_name === 'log.list'">Log List</NavLink>
                 <NavLink :href="route('dashboard')" :active="$page.props.route_name === 'file.sharedByMe'">Change history</NavLink>
                 <NavLink :href="route('dashboard')" :active="$page.props.route_name === 'trash'">Trash</NavLink>
             </div>
+            <!-- <div v-else class="py-3 "> -->
+            <!-- <div class="py-3 ">
+                <NavLink :href="route('dashboard')" :active="$page.props.route_name === 'dashboard'">User Dashboard</NavLink>
+                <NavLink :href="route('user.logs.list')" :active="$page.props.route_name === 'users.logs.list'">Employee</NavLink>
+                <NavLink :href="route('users.requests')" :active="$page.props.route_name === 'users.requests'">My requests</NavLink>
+                <NavLink :href="route('dashboard')" :active="$page.props.route_name === 'trash'">Trash</NavLink>
+            </div> -->
+
         </div>
     </nav>
 </template>

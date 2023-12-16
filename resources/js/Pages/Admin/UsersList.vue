@@ -42,7 +42,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(user, index) of users" :class="{ 'bg-gray-100': index % 2 === 1 }" @dblclick="showUser(user.id)"
+                    <tr v-for="(user, index) of users" :class="{ 'bg-gray-100': index % 2 === 1 }" @dblclick="showUserLogs(user.id)"
                         class="bg-white border-b transition duration-300 ease-in-out hover:bg-blue-100 cursor-pointer">
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                             Checkbox
@@ -94,12 +94,11 @@ const props = defineProps({
 })
 
 function redirectToUserEdit(id){
-    console.log(id);
     router.visit(route('user.edit', id));
 }
 
-function showUser(id){
-    router.visit(route('user.show', id));
+function showUserLogs(id){
+    router.get(route('user.logs', id));
 }
 
 

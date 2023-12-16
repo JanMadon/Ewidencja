@@ -5,6 +5,7 @@
                 <ChangeMonth @period="dateFromChangeMontchComponent" />
             </p>
             <p>nawigacja</p>
+            {{ $props.added }}
         </nav>
         <div class="flex-1 overflow-auto">
             <table class="min-w-full w-[900]">
@@ -138,12 +139,13 @@ import Modal from '@/Components/Modal.vue'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { router, useForm } from '@inertiajs/vue3';
-import { ref, toRaw } from 'vue';
+import { ref, watch ,onMounted  } from 'vue';
 import UserBreaks from '@/Components/app/UserBreaks.vue';
 import ChangeMonth from '@/Components/app/ChangeMonth.vue';
 
 const props = defineProps({
     id: String,
+    recordAdded: String,
     daysData: Object,
 })
 
@@ -154,7 +156,7 @@ const formData = useForm({
 const isVisible = ref(false);
 const dayData = ref({});
 
-
+watch(()=>props.recordAdded, showAlert)
 
 function showModal(dayData) {
     this.dayData = dayData
@@ -167,19 +169,26 @@ function closeModal() {
 }
 function addNewLog(day) {
     // sprawdz czy takiego loga jużnie ma tego dnia
-    // console.log(date);
-    // formData.data.value = date;
-    // console.log(formData.data);
-    router.post(route('log.add', props.id), {'newRecord': day +' '+  formData.newRecord})
 
+    router.put(route('addLog', props.id), {'newRecord': day +' '+  formData.newRecord})
     formData.newRecord = null;
     closeModal();
 }
 
-
 const dateFromChangeMontchComponent = (period) => {
-    router.post(route('log.user', props.id), { 'date': period });
+    console.log(period)
+     router.post(route('user.logs.period', props.id), { 'date': period });
 }
+
+function showAlert() {
+    if(props.recordAdded) {
+        alert('rekord ' +props.recordAdded+ ' has been added to the database')
+        location.reload(true);
+        props.recordAdded = ''
+    }
+        
+}
+
 
 
 </script>
