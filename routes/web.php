@@ -44,6 +44,8 @@ Route::controller(AdminController::class)
         ->name('user.bill');
         Route::post('/user/bill/{id}', 'getBillPeriod')
         ->name('user.bill.period');
+        Route::put('/user/bill/{id}', 'setNewSalary')
+        ->name('user.bill.setSalary');
         Route::get('/user/edit/{id}', 'edit')
         ->name('user.edit');
         Route::post('/user/edit/{id}', 'update')

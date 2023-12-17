@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AddedLogs;
 use App\Models\RawLogs;
+use App\Models\Salary;
 use App\Models\User;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
@@ -83,8 +84,6 @@ class AdminController extends Controller
         // dd($data);
         AddedLogs::insert($data);
 
-        // return redirect()->route('user.logs', ['id' => $id])->with('added', 'Wpis zaktualizowany pomyślnie');
-        //return to_route('user.logs.period', ['id' => $id]);
         return Inertia::render('Admin/UserLogs', [
             'id' => $id,
             'recordAdded' => $reguest->newRecord
@@ -135,6 +134,23 @@ class AdminController extends Controller
                 'salaryVaildFrom' => $salaryVaildFrom,
                 'salaryVaildTo' => $salaryVaildto
         ],
+        ]);
+    }
+
+    public function setNewSalary(Request $request, string $id){
+
+        $user = User::find($id);
+        $salary = new Salary();
+        $salary->set_by = Auth::id();
+        $salary->employee_id = $request['newSalry'];
+        $salary->valid_from = $request['validFrom'] . '-01';
+        $salary->save();
+
+        return Inertia::render('Admin/UserBill', [
+            'id' => $id, 
+            'data'=>[], 
+            'user' => $user,
+            'newSalaryAdded' => true,
         ]);
     }
 

@@ -124,29 +124,22 @@ const props = defineProps({
     id: String,
     user: Object,
     data: Object,
+    newSalaryAdded: Boolean,
 })
 
-const formData = useForm({
-    // name: props.user.name,
-    // firstname: props.user.firstname,
-    // lastname: props.user.lastname,
-    // email: props.user.email,
-    // isPremia: props.user.is_premia ? true : false,
-    // isActive: props.user.is_active ? true : false,
-    // isAdmin: props.user.is_admin ? true : false,
-});
-
-const submitForm = (id) => {
-    // tutaj można by dodać powiadaomienia do usera ze zostal rozliczony na podanych warunkcach 
-    //formData.post(route('user.update', id));
-};
 
 function showSalaryInput() {
  salatyInput.value = true;
 }
+watch(() => [props.data.workTime, selectedOption.value, customOption.value], countSalary)
+watch(() => props.newSalaryAdded, showAlertNewSalaryAdded)
 
 function setNewSalary() {
     if( confirm(`Should I set a new salary ${newSalaty.value} PLN from ${newSalatyValidFrom.value}?`) ){
+        router.put(route('user.bill.setSalary', [props.id]), {
+            'newSalry': newSalaty.value,
+            'validFrom': newSalatyValidFrom.value
+        })
     console.log('ustaw nową stawkę')
     }
     newSalaty.value = 0
@@ -154,8 +147,14 @@ function setNewSalary() {
     salatyInput.value = false
 }
 
-watch(() => [props.data.workTime, selectedOption.value, customOption.value], countSalary)
-//watch(()=> selectedOption.value, ()=>console.log(selectedOption.value))
+function showAlertNewSalaryAdded() {
+    if(props.newSalaryAdded) {
+        alert('A new salary has been added.')
+        location.reload(true);
+        props.recordAdded = false
+    } 
+}
+
 
 function countSalary() {
     if (props.data.workTime) {
@@ -205,7 +204,6 @@ function setOptionYaer(period) {
 
 }
 
-
 function returnPage() {
         router.visit(route('users.list') );
 }
@@ -214,11 +212,6 @@ const dateFromChangeMontchComponent = (period) => {
     setOptionYaer(period)
     router.post(route('user.bill.period', props.id), { 'date': period });
 }
-
-
-// onMounted(() => {
-//     setOptionYaer(new Date().getFullYear())
-// })
 
 </script>
 

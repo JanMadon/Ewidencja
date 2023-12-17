@@ -140,7 +140,6 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { router, useForm } from '@inertiajs/vue3';
 import { ref, watch ,onMounted  } from 'vue';
-import UserBreaks from '@/Components/app/UserBreaks.vue';
 import ChangeMonth from '@/Components/app/ChangeMonth.vue';
 
 const props = defineProps({
@@ -182,11 +181,10 @@ const dateFromChangeMontchComponent = (period) => {
 
 function showAlert() {
     if(props.recordAdded) {
-        alert('rekord ' +props.recordAdded+ ' has been added to the database')
+        alert('rekord ' + props.recordAdded + ' has been added to the database')
         location.reload(true);
         props.recordAdded = ''
-    }
-        
+    } 
 }
 
 
