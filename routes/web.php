@@ -40,6 +40,10 @@ Route::controller(AdminController::class)
         ->name('user.logs.period');
         Route::put('/user/logs/{id}', 'addLog')
         ->name('addLog');
+        Route::get('/user/bill/{id}', 'getBill')
+        ->name('user.bill');
+        Route::post('/user/bill/{id}', 'getBillPeriod')
+        ->name('user.bill.period');
         Route::get('/user/edit/{id}', 'edit')
         ->name('user.edit');
         Route::post('/user/edit/{id}', 'update')

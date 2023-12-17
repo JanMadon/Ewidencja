@@ -35,14 +35,14 @@
                         <th class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
                             Privileges
                         </th>
-                        <th class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                            Opcje
+                        <th class="text-sm font-medium text-gray-900 px-6 py-4 text-center">
+                            Opcion
                         </th>
 
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(user, index) of users" :class="{ 'bg-gray-100': index % 2 === 1 }" @dblclick="showUserLogs(user.id)"
+                    <tr v-for="(user, index) of users" :class="{ 'bg-gray-100': index % 2 === 1 }" @dblclick="showUserLogs(user.id)" @click=""
                         class="bg-white border-b transition duration-300 ease-in-out hover:bg-blue-100 cursor-pointer">
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                             Checkbox
@@ -71,8 +71,11 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 ">
                             {{ user.is_admin  ? 'Admin' : 'Regular' }}
                         </td>
+                        
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 ">
-                            <PrimaryButton @click="redirectToUserEdit(user.id)">Edit</PrimaryButton>
+                            <SecondaryButton class="mr-2" @click.prevent="redirectToUserBill(user.id)">Bill</SecondaryButton>
+                            <PrimaryButton @click.prevent="redirectToUserEdit(user.id)">Edit</PrimaryButton>
+
                         </td>
                     </tr>
                 </tbody>
@@ -87,11 +90,16 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { router } from '@inertiajs/vue3';
 
 const props = defineProps({
     users: Object,
 })
+
+function redirectToUserBill(id){
+    router.visit(route('user.bill', id)); 
+}
 
 function redirectToUserEdit(id){
     router.visit(route('user.edit', id));

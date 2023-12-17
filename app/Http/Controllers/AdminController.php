@@ -56,7 +56,7 @@ class AdminController extends Controller
         //dd($timeFrom, $timeTo);
 
         $daysLogs = $this->getDataForUser($id, $timeFrom, $timeTo);
-        //dd($daysLogs);
+       // dd($daysLogs);
 
         return Inertia::render('Admin/UserLogs', [
             'id' => $id,
@@ -88,6 +88,53 @@ class AdminController extends Controller
         return Inertia::render('Admin/UserLogs', [
             'id' => $id,
             'recordAdded' => $reguest->newRecord
+        ]);
+    }
+
+    public function getBill(string $id) {
+        $user = User::find($id);
+        return Inertia::render('Admin/UserBill', ['id' => $id, 'data'=>[], 'user' => $user,]);
+    }
+
+    public function getBillPeriod(Request $request, string $id)
+    {
+        $user = User::find($id);
+        $timeFrom = $request['date'] ?? Carbon::now()->format('Y-m-01');
+        $timeTo = Carbon::parse($timeFrom)->addMonth()->format('Y-m-d');
+        //dd($timeFrom, $timeTo);
+
+        $daysLogs = $this->getDataForUser($id, $timeFrom, $timeTo);
+        $errors = 0;
+        $workTime = CarbonInterval::seconds(00);
+        $doubleHours = 0;
+        $salary = 6000;
+        $salaryVaildFrom = '2023-01';
+        $salaryVaildto = '2023-12';
+
+        foreach($daysLogs as $daydata) {
+            if(!$daydata['is_correct']){
+                $errors++;
+                continue;
+            }
+            if($daydata['premia']) {
+                $doubleHours++;
+            }
+            $workTime->add(CarbonInterval::createFromFormat('H:i:s', $daydata['work_time']))->cascade();
+        }
+        $workTime = $workTime->format('%H:%I:%S');
+
+        return Inertia::render('Admin/UserBill', [
+            'id' => $id,
+            'user' => $user,
+            'setTime' => [$timeFrom, $timeTo],
+            'data' => [
+                'workTime' => $workTime,
+                'doubleHours' => $doubleHours,
+                'errors' => $errors,
+                'salary' => $salary,
+                'salaryVaildFrom' => $salaryVaildFrom,
+                'salaryVaildTo' => $salaryVaildto
+        ],
         ]);
     }
 
