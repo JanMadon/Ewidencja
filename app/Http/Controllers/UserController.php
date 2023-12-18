@@ -15,20 +15,22 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function list()
+    public function dashboard()
     {
-        $users = User::get();
-        return Inertia::render('UsersList', ['users' => $users]);
+        // to co user widzi po zalogowaniu prawdopodobie bill.
+        
+        return Inertia::render('User.DashboardUser');
     }
 
-    public function userLogs()
+    public function Logs()
     {
-        return Inertia::render('UserLogs', [
+
+        return Inertia::render('User/Logs', [
             'id' => Auth::id(),
         ]);
     }
 
-    public function userLogsPeriod(Request $request)
+    public function LogsPeriod(Request $request)
     {
         $id = Auth::id();
         $timeFrom = $request['date'] ?? Carbon::now()->format('Y-m-01');
@@ -38,21 +40,21 @@ class UserController extends Controller
         $daysLogs = $this->getDataForUser($id, $timeFrom, $timeTo);
         //dd($daysLogs);
 
-        return Inertia::render('UserLogs', [
+        return Inertia::render('User/Logs', [
             'id' => $id,
             'setTime' => [$timeFrom, $timeTo],
             'daysData' => $daysLogs,
         ]);
     }
 
-    public function addLog(Request $reguest)
+    public function addLogRequest(Request $reguest)
     {
         // tzeba zrobić walidacja która sprawdza czy DANY user nie dodał już logu o danej godzinie i czy nie ma tej godziny w RawLog 
         // id jest wysyłane w url, wiec to raczej dla admina
         $id = Auth::id();
         $data = [
             'date_time' => $reguest->newRecord,
-            'employee_id' => $reguest->id,
+            'employee_id' => $id,
             'is_active' => true,
             'is_approved' => false,
             'approved_by' => '',
@@ -62,9 +64,7 @@ class UserController extends Controller
         // dd($data);
         AddedLogs::insert($data);
 
-        // return redirect()->route('user.logs', ['id' => $id])->with('added', 'Wpis zaktualizowany pomyślnie');
-        //return to_route('user.logs.period', ['id' => $id]);
-        return Inertia::render('UserLogs', [
+        return Inertia::render('User/Logs', [
             'id' => $id,
             'recordAdded' => $reguest->newRecord
         ]);

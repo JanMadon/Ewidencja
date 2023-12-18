@@ -65,9 +65,9 @@
                 </tbody>
             </table>
             <div class="py-8 text-center text-sm text-gray-400">
-                {{ id }}
+                <!-- {{ id }} -->
                 <br>
-                {{ daysData }}
+                <!-- {{ daysData }} -->
             </div>
             <div ref="loadMoreIntersect"></div>
         </div>
@@ -119,11 +119,11 @@
                         </tbody>
                     </table>
                     <form @submit.prevent="addNewLog(dayData[0])" class=" flex flex-col justify-end items-center ">
-                        <label for="appt">Set new record:</label>
+                        <label for="appt">New record:</label>
                         <input v-model=formData.newRecord :formDate.date="dayData[0]"   type="time" id="appt" name="appt" required />
                         <div class="mt-6 flex justify-end mt-20">
                             <SecondaryButton @click.prevent="closeModal">Cancel</SecondaryButton>
-                            <PrimaryButton class="ms-3">Add record</PrimaryButton>
+                            <PrimaryButton class="ms-3">Send request</PrimaryButton>
                         </div>
                     </form>
                 </div>
@@ -143,7 +143,7 @@ import { ref, watch ,onMounted  } from 'vue';
 import ChangeMonth from '@/Components/app/ChangeMonth.vue';
 
 const props = defineProps({
-    id: String,
+    id: Number,
     recordAdded: String,
     daysData: Object,
 })
@@ -169,19 +169,18 @@ function closeModal() {
 function addNewLog(day) {
     // sprawdz czy takiego loga jużnie ma tego dnia
 
-    router.put(route('user.addLog', props.id), {'newRecord': day +' '+  formData.newRecord})
+    router.put(route('my.addLogRequest'), {'newRecord': day +' '+  formData.newRecord})
     formData.newRecord = null;
     closeModal();
 }
 
 const dateFromChangeMontchComponent = (period) => {
-    console.log(period)
-     router.post(route('user.logs.period', props.id), { 'date': period });
+     router.post(route('my.logs.period'), {'id': props.id ,'date': period });
 }
 
 function showAlert() {
     if(props.recordAdded) {
-        alert('Rekord ' + props.recordAdded + ' has been added to the database')
+        alert('Rekord ' + props.recordAdded + ' has been sent for admin approval')
         location.reload(true);
         props.recordAdded = ''
     } 

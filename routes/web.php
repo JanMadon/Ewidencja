@@ -32,6 +32,8 @@ Route::get('/', function () {
 Route::controller(AdminController::class)
     ->middleware(['auth', 'verified', 'admin'])
     ->group(function(){
+        Route::get('/admin-dashboard', 'dashboard')
+        ->name('dashboardAdmin');
         Route::get('/users', 'List')
         ->name('users.list');
         Route::get('/user/logs/{id}', 'userLogs')
@@ -39,7 +41,7 @@ Route::controller(AdminController::class)
         Route::post('/user/logs/{id}', 'userLogsPeriod')
         ->name('user.logs.period');
         Route::put('/user/logs/{id}', 'addLog')
-        ->name('addLog');
+        ->name('user.addLog');
         Route::get('/user/bill/{id}', 'getBill')
         ->name('user.bill');
         Route::post('/user/bill/{id}', 'getBillPeriod')
@@ -56,24 +58,32 @@ Route::controller(AdminController::class)
         ->name('request.accept');
     });
 
-// Route::controller(UserController::class)
-// ->middleware(['auth', 'verified'])
-// ->group(function(){
-//     Route::get('/user/logs', 'userLogs')
-//     ->name('user.logs.list');
-//     Route::post('/user/logs', 'userLogsPeriod')
-//     ->name('user.logs.period');
-//     Route::put('/user/logs', 'addLog')
-//     ->name('addLog');
-//     Route::get('/user/edit/{id}', 'edit')
-//     ->name('user.edit');
-//     Route::post('/user/{id}', 'update')
-//     ->name('user.update');
-//     Route::get('/users/requests', 'requestsList')
-//     ->name('users.requests');
-//     Route::post('/users/requests', 'requestAccept')
-//     ->name('request.accept');
-// });
+Route::controller(UserController::class)
+->middleware(['auth', 'verified'])
+->group(function(){
+    Route::get('/user-dashboard', 'dashboard')
+        ->name('dashboardUser');
+    Route::get('/my/logs', 'Logs')
+        ->name('my.logs');
+    Route::post('/my/logs', 'LogsPeriod')
+        ->name('my.logs.period');
+    Route::put('/my/logs', 'addLogRequest')
+    ->name('my.addLogRequest');
+
+
+    // Route::post('/user/logs', 'userLogsPeriod')
+    // ->name('user.logs.period');
+    // Route::put('/user/logs', 'addLog')
+    // ->name('addLog');
+    // Route::get('/user/edit/{id}', 'edit')
+    // ->name('user.edit');
+    // Route::post('/user/{id}', 'update')
+    // ->name('user.update');
+    // Route::get('/users/requests', 'requestsList')
+    // ->name('users.requests');
+    // Route::post('/users/requests', 'requestAccept')
+    // ->name('request.accept');
+});
 
 
 
