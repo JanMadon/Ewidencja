@@ -60,17 +60,20 @@
                             <tr class="bg-gray-200">
                                 <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
                                     Salary 
-                                    <SecondaryButton @click.prevent="showSalaryInput" v-show="!salatyInput" class="">
+                                    <SecondaryButton @click.prevent="showSalaryInput" v-show="!salatyInput" class="scale-75">
                                         set new
                                     </SecondaryButton>
-                                    <PrimaryButton @click.prevent="setNewSalary" v-show="salatyInput" class="">
-                                        set new
+                                    <DangerButton  @click.prevent="()=>salatyInput=false" v-show="salatyInput" class="scale-90">
+                                        back 
+                                    </DangerButton>
+                                    <PrimaryButton @click.prevent="setNewSalary" v-show="salatyInput" class=" scale-90">
+                                        set
                                     </PrimaryButton>
                                     <p class="text-xs">valid from</p>
                                 </td>
                                 <td v-if="salatyInput"  class="text-center">
-                                    <input v-model="newSalaty" type="number" min="0" placeholder="set new salary" class="w-[51%] text-center">
-                                    <input v-model="newSalatyValidFrom" type="month" placeholder="set month" class="w-[51%]">
+                                    <input v-model="newSalaty" type="number" min="0" placeholder="set new salary" class="w-[51%] text-center scale-90">
+                                    <input v-model="newSalatyValidFrom" type="month" placeholder="set month" class="w-[51%] scale-90">
                                 </td>
                                 <td v-else class="text-center">
                                     {{ data.salary }}
@@ -90,7 +93,7 @@
                     </table>
                     <!-- Przycisk submit zajmuje obie kolumny -->
                     <div>
-                        <DangerButton @click.prevent="returnPage" class="mr-5">return</DangerButton>
+                        <SecondaryButton @click.prevent="returnPage" class="mr-5 mt-5">return</SecondaryButton>
                         <!-- <PrimaryButton type="submit">save</PrimaryButton> -->
                     </div>
                 </form>

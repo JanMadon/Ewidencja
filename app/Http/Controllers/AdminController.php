@@ -106,9 +106,9 @@ class AdminController extends Controller
         $errors = 0;
         $workTime = CarbonInterval::seconds(00);
         $doubleHours = 0;
-        $salary = 6000;
+        $salary = Salary::where('employee_id', $id)->orderBy('valid_from','desc')->first()->salary ?? 0;
         $salaryVaildFrom = '2023-01';
-        $salaryVaildto = '2023-12';
+        $salaryVaildto = 'to implement';
 
         foreach($daysLogs as $daydata) {
             if(!$daydata['is_correct']){
@@ -142,8 +142,9 @@ class AdminController extends Controller
         $user = User::find($id);
         $salary = new Salary();
         $salary->set_by = Auth::id();
-        $salary->employee_id = $request['newSalry'];
-        $salary->valid_from = $request['validFrom'] . '-01';
+        $salary->employee_id = $user->id;
+        $salary->salary = $request->newSalry;
+        $salary->valid_from = $request->validFrom . '-01';
         $salary->save();
 
         return Inertia::render('Admin/UserBill', [

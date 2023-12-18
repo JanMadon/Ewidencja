@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('salaries', function (Blueprint $table) {
             $table->id();
-            $table->string('set_by');
-            $table->string('employee_id');
-            $table->dateTime('valid_from');
+            $table->integer('set_by');
+            $table->integer('employee_id');
+            $table->integer('salary');
+            $table->date('valid_from');
             $table->timestamps();
         });
     }
