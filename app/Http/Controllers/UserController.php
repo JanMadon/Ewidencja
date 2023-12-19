@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AddedLogs;
 use App\Models\RawLogs;
+use App\Models\Salary;
 use App\Models\User;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
@@ -15,13 +16,55 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function dashboard()
-    {
-        // to co user widzi po zalogowaniu prawdopodobie bill.
-        
-        return Inertia::render('User.DashboardUser');
+    public function getBill() {
+
+        return Inertia::render('User/dashboardUser', [
+            'data'=>[],
+            'user' => Auth::user(),
+        ]);
     }
 
+    public function getBillPeriod(Request $request)
+    {
+        $user = Auth::user();
+        $id = $user->id;
+        $timeFrom = $request['date'] ?? Carbon::now()->format('Y-m-01');
+        $timeTo = Carbon::parse($timeFrom)->addMonth()->format('Y-m-d');
+        //dd($timeFrom, $timeTo);
+
+        $daysLogs = $this->getDataForUser($id, $timeFrom, $timeTo);
+        $errors = 0;
+        $workTime = CarbonInterval::seconds(00);
+        $doubleHours = 0;
+        $salary = Salary::where('employee_id', $id)->orderBy('valid_from','desc')->first()->salary ?? 0;
+        $salaryVaildFrom = '2023-01';
+        $salaryVaildto = 'to implement';
+
+        foreach($daysLogs as $daydata) {
+            if(!$daydata['is_correct']){
+                $errors++;
+                continue;
+            }
+            if($daydata['premia']) {
+                $doubleHours++;
+            }
+            $workTime->add(CarbonInterval::createFromFormat('H:i:s', $daydata['work_time']))->cascade();
+        }
+        $workTime = $workTime->format('%H:%I:%S');
+
+        return Inertia::render('User/dashboardUser', [
+            'user' => $user,
+            'setTime' => [$timeFrom, $timeTo],
+            'data' => [
+                'workTime' => $workTime,
+                'doubleHours' => $doubleHours,
+                'errors' => $errors,
+                'salary' => $salary,
+                'salaryVaildFrom' => $salaryVaildFrom,
+                'salaryVaildTo' => $salaryVaildto
+        ],
+        ]);
+    }
     public function Logs()
     {
 
@@ -70,12 +113,13 @@ class UserController extends Controller
         ]);
     }
 
-    public function requestsList(Request $request)
+    public function getRequests(Request $request)
     {
         //można by sprawdzać jaki user jest zalogowany 
         $usersRequests = [];
-
-        $data = AddedLogs::orderBy('id', 'desc')
+        $data = AddedLogs::where('employee_id', Auth::user()->id)
+            ->where('is_active', true)
+            ->orderBy('id', 'desc')
             ->get()
             ->toArray();
 
@@ -92,32 +136,16 @@ class UserController extends Controller
         $usersRequests1 = $this->arrPaginate($usersRequests, 10);
         $usersRequests1->setPath($request->url());
 
-        return Inertia::render('UsersRequests', ['usersRequests' => $usersRequests1]);
+        return Inertia::render('User/Requests', ['usersRequests' => $usersRequests1]);
     }
 
-    public function requestAccept(Request $request)
+    public function deleteRequests(Request $request)
     {
+        $log = AddedLogs::find($request->requestId);
+        $log->is_active = false;
+        $log->save();
 
-        if ($request->action === 'accpet') {
-            $log = AddedLogs::find($request->requestId);
-            $log->approved_by = Auth::id();
-            $log->is_approved = true;
-            $log->save();
-        } elseif ($request->action === 'reject') {
-            $log = AddedLogs::find($request->requestId);
-            $log->approved_by = Auth::id();
-            $log->is_approved = false;
-            $log->save();
-        } elseif ($request->action === 'undo') {
-            $log = AddedLogs::find($request->requestId);
-            $log->approved_by = null;
-            $log->is_approved = false;
-            $log->save();
-        } else {
-            // throw an exception
-        }
-
-        return to_route('users.requests');
+        return to_route('my.requests');
     }
 
     public function arrPaginate($array, $perPage = 5, $page = null)

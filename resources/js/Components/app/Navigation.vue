@@ -19,9 +19,9 @@
             </div>
             <!-- <div v-else class="py-3 "> -->
             <div class="py-3 ">
-                <NavLink href="route('dashboard')" :active="$page.props.route_name === 'dashboard'">User Dashboard</NavLink>
+                <NavLink :href="route('dashboardUser')" :active="$page.props.route_name === 'dashboardUser'">User Dashboard</NavLink>
                 <NavLink :href="route('my.logs')" :active="$page.props.route_name === 'my.logs'">My logs</NavLink>
-                <NavLink href="route('users.requests')" :active="$page.props.route_name === 'users.requests'">My requests</NavLink>
+                <NavLink :href="route('my.requests')" :active="$page.props.route_name === 'my.requests'">My requests</NavLink>
                 <NavLink href="route('dashboard')" :active="$page.props.route_name === 'trash'">Trash</NavLink>
             </div>
 

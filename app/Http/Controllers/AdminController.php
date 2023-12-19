@@ -160,7 +160,8 @@ class AdminController extends Controller
         //można by sprawdzać jaki user jest zalogowany 
         $usersRequests = [];
 
-        $data = AddedLogs::orderBy('id', 'desc')
+        $data = AddedLogs::where('is_active', true)
+            ->orderBy('id', 'desc')
             ->get()
             ->toArray();
 

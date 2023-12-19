@@ -61,14 +61,20 @@ Route::controller(AdminController::class)
 Route::controller(UserController::class)
 ->middleware(['auth', 'verified'])
 ->group(function(){
-    Route::get('/user-dashboard', 'dashboard')
+    Route::get('/user-dashboard', 'getBill')
         ->name('dashboardUser');
+    Route::post('/user-dashboard', 'getBillPeriod')
+        ->name('dashboardUser.period');
     Route::get('/my/logs', 'Logs')
         ->name('my.logs');
     Route::post('/my/logs', 'LogsPeriod')
         ->name('my.logs.period');
     Route::put('/my/logs', 'addLogRequest')
-    ->name('my.addLogRequest');
+        ->name('my.addLogRequest');
+    Route::get('/my/requests', 'getRequests')
+        ->name('my.requests');
+    Route::post('/my/requests', 'deleteRequests')
+        ->name('my.deleteRequest');
 
 
     // Route::post('/user/logs', 'userLogsPeriod')
