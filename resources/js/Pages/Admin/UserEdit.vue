@@ -1,36 +1,44 @@
 <template>
     <AuthenticatedLayout>
+        <template #header>
+            <h1 class="font-semibold text-2xl text-gray-800 leading-tight">Employee - Edit</h1>
+        </template>
         <nav class="flex items-center justify-between p-1 bm-3">
-            <p>nawigacja</p>
-            <p>nawigacja</p>
+            <p>...</p>
+            <p>...</p>
         </nav>
         <div>
-            {{ user }}
             <div class="max-w-xl mx-auto mt-10 p-6 bg-white rounded-md shadow-md">
                 <h2 class="text-2xl font-semibold mb-6">Edit user</h2>
                 <h4 class="text-xl font-semibold mb-6">Id: {{ user.id }} </h4>
-
+                <p class="text-red-500">{{ formData.errors.id ? formData.errors.id : '' }}</p>
 
                 <form @submit.prevent="submitForm(user.id)" class="grid grid-cols-2 gap-4">
                     <!-- Lewa strona formularza -->
                     <div class="col-span-1">
                         <div class="mb-4">
+                            <label for="id" class="block text-gray-700 text-sm font-bold mb-2">id:</label>
+                            <input v-model="formData.id" type="number" id="id"
+                                class="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+                                placeholder="id" />
+                        </div>
+                        <div class="mb-4">
                             <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Name:</label>
                             <input v-model="formData.name" type="text" id="name"
                                 class="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-                                placeholder="name" required />
+                                placeholder="name" required disabled/>
                         </div>
                         <div class="mb-4">
                             <label for="firstname" class="block text-gray-700 text-sm font-bold mb-2">Firstname:</label>
                             <input v-model="formData.firstname" type="text" id="name"
                                 class="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-                                placeholder="firstname" required />
+                                placeholder="firstname" required disabled/>
                         </div>
                         <div class="mb-4">
                             <label for="lastname" class="block text-gray-700 text-sm font-bold mb-2">Lastname:</label>
                             <input v-model="formData.lastname" type="text" id="name"
                                 class="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-                                placeholder="lastname" required />
+                                placeholder="lastname" required disabled/>
                         </div>
 
 
@@ -42,7 +50,7 @@
                             <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
                             <input v-model="formData.email" type="email" id="email"
                                 class="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-                                :placeholder="user.email" required />
+                                :placeholder="user.email" required disabled/>
                         </div>
 
                         <div class="ml-5 mb-4 mt-12 text-gray-700 text-sm font-bold flex ">Premia:
@@ -82,29 +90,37 @@
 
                     <!-- Przycisk submit zajmuje obie kolumny -->
                     <div>
-                        <DangerButton @click.prevent="returnPage" class="mr-5">return</DangerButton>
+                        <SecondaryButton @click.prevent="returnPage" class="mr-5">return</SecondaryButton>
                         <PrimaryButton type="submit">save</PrimaryButton>
-
+                    </div>
+                    <div class="flex justify-end ">
+                        <DangerButton @click.prevent="deleteUser">delete user</DangerButton>
                     </div>
                 </form>
             </div>
         </div>
+        
     </AuthenticatedLayout>
 </template>
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import DangerButton from '@/Components/DangerButton.vue';
 import { router, useForm, usePage } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import DangerButton from '@/Components/DangerButton.vue';
+import { useAttrs } from 'vue';
 
 
 const props = defineProps({
     user: Object,
 })
 
+const attrs = useAttrs()
+
 const formData = useForm({
+    id: props.user.id,
     name: props.user.name,
     firstname: props.user.firstname,
     lastname: props.user.lastname,
@@ -125,6 +141,16 @@ function returnPage() {
         router.visit(route('users.list'));
     }
 
+}
+
+function deleteUser() {
+    if(window.confirm(`Are you sure you want to delete user: ${props.user.name}`)){
+        if(props.user.id === attrs.auth.user.id){
+            alert('You cannot remove yourself!');
+        } else {
+            router.delete(route('user.delete', props.user.id));
+        }
+    }
 }
 
 

@@ -1,5 +1,9 @@
 <template>
     <AuthenticatedLayout>
+        <template #header>
+            <h1 class="font-semibold text-2xl text-gray-800 leading-tight">
+Employee requests</h1>
+        </template>
         <nav class="flex items-center justify-between p-1 bm-3">
             <p>nawigacja</p>
             <p>nawigacja</p>

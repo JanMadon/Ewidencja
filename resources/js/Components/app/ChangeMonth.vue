@@ -1,7 +1,7 @@
 <template>
-    <div>
+    <div class="flex">
         <SecondaryButton @click.prevent="moveMonth(-1)">Previous month</SecondaryButton>
-        <span>{{ currentMonth }}</span>
+        <p class="w-40 text-center pt-1">{{ currentMonth }}</p>
         <SecondaryButton @click.prevent="moveMonth(1)">Next month</SecondaryButton>
     </div>
 </template>

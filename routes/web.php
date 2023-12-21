@@ -52,10 +52,18 @@ Route::controller(AdminController::class)
         ->name('user.edit');
         Route::post('/user/edit/{id}', 'update')
         ->name('user.update');
+        Route::delete('/user/edit/{id}', 'delete')
+        ->name('user.delete');
         Route::get('/users/requests', 'requestsList')
         ->name('users.requests');
         Route::post('/users/requests', 'requestAccept')
         ->name('request.accept');
+        Route::get('/users/history', function () {
+            return Inertia::render('Admin/History'); })
+        ->name('users.hostory');
+        Route::get('/users/trash', function () {
+            return Inertia::render('Admin/Trash'); })
+        ->name('users.trash');
     });
 
 Route::controller(UserController::class)
@@ -75,6 +83,9 @@ Route::controller(UserController::class)
         ->name('my.requests');
     Route::post('/my/requests', 'deleteRequests')
         ->name('my.deleteRequest');
+    Route::get('/my/trash', function () {
+        return Inertia::render('User/Trash'); })
+    ->name('my.trash');
 
 
     // Route::post('/user/logs', 'userLogsPeriod')

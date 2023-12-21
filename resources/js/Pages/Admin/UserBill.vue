@@ -1,10 +1,15 @@
 <template>
     <AuthenticatedLayout>
+        <template #header>
+            <h1 class="font-semibold text-2xl text-gray-800 leading-tight">Employees - Bill</h1>
+        </template>
         <nav class="flex items-center justify-between p-1 bm-3">
-            <p>
+            <p class="text-xl">
                 <ChangeMonth @period="dateFromChangeMontchComponent" />
             </p>
-            <p>nawigacja</p>
+            <p class="text-xl">
+                 User: {{ user.name }}
+            </p>
         </nav>
         <div class="overflow-x-auto">
 

@@ -1,11 +1,15 @@
 <template>
     <AuthenticatedLayout>
+        <template #header>
+            <h1 class="font-semibold text-2xl text-gray-800 leading-tight">Employee logs</h1>
+        </template>
         <nav class="flex items-center justify-between p-1 bm-3">
-            <p>
+            <p class="text-xl">
                 <ChangeMonth @period="dateFromChangeMontchComponent" />
             </p>
-            <p>nawigacja</p>
-            {{ $props.added }}
+            <p class="text-xl">
+                 User: {{ user.name }}
+            </p>
         </nav>
         <div class="flex-1 overflow-auto">
             <table class="min-w-full w-[900]">
@@ -58,16 +62,16 @@
                             {{ dayData.work_time }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 ">
-                            +
+                            {{ dayData.premia ? 'YES' : 'NO' }}
                         </td>
 
                     </tr>
                 </tbody>
             </table>
             <div class="py-8 text-center text-sm text-gray-400">
-                {{ id }}
+                <!-- {{ id }} -->
                 <br>
-                {{ daysData }}
+                <!-- {{ daysData}} -->
             </div>
             <div ref="loadMoreIntersect"></div>
         </div>
@@ -85,7 +89,7 @@
                             <strong>{{ dayData[1].logs[dayData[1].logs.length - 1] }}</strong>
                         </div>
                     </div>
-                    <div >
+                    <div>
                         <div class="text-center  p-2">Time at work:
                             <strong>{{ dayData[1].time }}</strong>
                         </div>
@@ -120,7 +124,8 @@
                     </table>
                     <form @submit.prevent="addNewLog(dayData[0])" class=" flex flex-col justify-end items-center ">
                         <label for="appt">Set new record:</label>
-                        <input v-model=formData.newRecord :formDate.date="dayData[0]"   type="time" id="appt" name="appt" required />
+                        <input v-model=formData.newRecord :formDate.date="dayData[0]" type="time" id="appt" name="appt"
+                            required />
                         <div class="mt-6 flex justify-end mt-20">
                             <SecondaryButton @click.prevent="closeModal">Cancel</SecondaryButton>
                             <PrimaryButton class="ms-3">Add record</PrimaryButton>
@@ -128,6 +133,7 @@
                     </form>
                 </div>
             </div>
+            {{  }}
 
         </Modal>
     </AuthenticatedLayout>
@@ -139,11 +145,12 @@ import Modal from '@/Components/Modal.vue'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { router, useForm } from '@inertiajs/vue3';
-import { ref, watch ,onMounted  } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import ChangeMonth from '@/Components/app/ChangeMonth.vue';
 
 const props = defineProps({
     id: String,
+    user: Object,
     recordAdded: String,
     daysData: Object,
 })
@@ -155,7 +162,7 @@ const formData = useForm({
 const isVisible = ref(false);
 const dayData = ref({});
 
-watch(()=>props.recordAdded, showAlert)
+watch(() => props.recordAdded, showAlert)
 
 function showModal(dayData) {
     this.dayData = dayData
@@ -169,29 +176,21 @@ function closeModal() {
 function addNewLog(day) {
     // sprawdz czy takiego loga jużnie ma tego dnia
 
-    router.put(route('user.addLog', props.id), {'newRecord': day +' '+  formData.newRecord})
+    router.put(route('user.addLog', props.id), { 'newRecord': day + ' ' + formData.newRecord })
     formData.newRecord = null;
     closeModal();
 }
 
 const dateFromChangeMontchComponent = (period) => {
-    console.log(period)
-     router.post(route('user.logs.period', props.id), { 'date': period });
+    router.post(route('user.logs.period', props.id), { 'date': period });
 }
 
 function showAlert() {
-    if(props.recordAdded) {
+    if (props.recordAdded) {
         alert('Rekord ' + props.recordAdded + ' has been added to the database')
         location.reload(true);
         props.recordAdded = ''
-    } 
+    }
 }
 
-
-
 </script>
-
-
-
-
-<style scoped></style>

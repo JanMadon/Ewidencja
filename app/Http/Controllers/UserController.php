@@ -18,7 +18,7 @@ class UserController extends Controller
 {
     public function getBill() {
 
-        return Inertia::render('User/dashboardUser', [
+        return Inertia::render('User/DashboardUser', [
             'data'=>[],
             'user' => Auth::user(),
         ]);
@@ -52,7 +52,7 @@ class UserController extends Controller
         }
         $workTime = $workTime->format('%H:%I:%S');
 
-        return Inertia::render('User/dashboardUser', [
+        return Inertia::render('User/DashboardUser', [
             'user' => $user,
             'setTime' => [$timeFrom, $timeTo],
             'data' => [

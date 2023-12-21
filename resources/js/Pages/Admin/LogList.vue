@@ -1,7 +1,11 @@
 <template>
     <AuthenticatedLayout>
+       
+        <template #header>
+            <h1 class="font-semibold text-2xl text-gray-800 leading-tight">Recent raw logs</h1>
+        </template>
         <nav class="flex justify-end p-1 bm-3">
-            <PrimaryButton @click="updateLog">update log</PrimaryButton>
+            <PrimaryButton @click="updateLog">send log to DB</PrimaryButton>
         </nav>
         <div class="flex justify-center overflow-auto">
             <table class=" w-[600]">

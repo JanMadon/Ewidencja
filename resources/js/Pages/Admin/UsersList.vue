@@ -1,8 +1,11 @@
 <template>
     <AuthenticatedLayout>
+        <template #header>
+            <h1 class="font-semibold text-2xl text-gray-800 leading-tight">Employees - List</h1>
+        </template>
         <nav class="flex items-center justify-between p-1 bm-3">
-            <p>nawigacja</p>
-            <p>nawigacja</p>
+            <p>...</p>
+            <p>...</p>
         </nav>
         <div class="flex-1 overflow-auto">
             <table class="min-w-full w-[900]">

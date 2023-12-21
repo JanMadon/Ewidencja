@@ -48,4 +48,8 @@ class User extends Authenticatable
     public function addedLogs(): HasMany{
         return $this->hasMany(AddLogs::class,'employee_id', 'id');
     }
+
+    public function xxx(): HasMany{
+        return $this->hasMany(RawLogs::class,'employee_id', 'id');
+    }
 }

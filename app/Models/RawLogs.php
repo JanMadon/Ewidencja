@@ -13,7 +13,7 @@ class RawLogs extends Model
     public function user(): BelongsTo
     {
     
-        return $this->belongsTo(User::class, 'employee_id');
+        return $this->belongsTo(User::class, 'employee_id', 'id');
     }
 
     public function user2(): BelongsTo

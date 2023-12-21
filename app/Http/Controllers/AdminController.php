@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EditUserRequest;
 use App\Models\AddedLogs;
 use App\Models\RawLogs;
 use App\Models\Salary;
@@ -16,6 +17,23 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
+
+    public function dashboard() {
+        // funckcja na dabeli raw_log sprawdzająca jaki uzytkownik ma dziś nie parszystą liczbę odbić
+        // czyli jest w pracy   TODO DO IMPLENETACJI
+        // $today = Carbon::now()->format('Y-m-d');
+        // $currentEpmloyees = RawLogs::where('date_time', '>' ,$today)->first()->user;
+
+        // dd($currentEpmloyees->name);
+        // $users = User::where('id', $currentEpmloyees);
+        $users = [];
+
+
+        return Inertia::render('Admin/DashboardAdmin', [
+            'users' => $users
+        ]);
+    }
+
     public function list()
     {
         $users = User::get();
@@ -33,20 +51,31 @@ class AdminController extends Controller
         return Inertia::render('Admin/UserEdit', ['user' => $user]);
     }
 
-    public function update(Request $request, string $id)
-    {
-        // TO DO VALIDACJA I UPDATE DB
-        dd($request);
+    public function update(EditUserRequest $request, string $id)
+    {   // change ID
+        $request->validated();
+        $user = User::find($id);
+        $user->id = $request->id;
+        $user->save();
+        
+       return to_route('users.list');
     }
 
-    public function destroy(string $id)
+    public function delete(string $id)
     {
-        //
+        $user = User::find($id);
+        dd($user);
+        $user ->delete();
+       return to_route('users.list');
+
     }
 
-    public function userLogs(Request $request, string $id)
-    {
-        return Inertia::render('Admin/UserLogs', ['id' => $id]);
+    public function userLogs( string $id)
+    {   
+        return Inertia::render('Admin/UserLogs', [
+            'id' => $id,
+            'user' => User::find($id) ?? [],
+        ]);
     }
 
 
@@ -61,6 +90,7 @@ class AdminController extends Controller
 
         return Inertia::render('Admin/UserLogs', [
             'id' => $id,
+            'user' => User::find($id) ?? [],
             'setTime' => [$timeFrom, $timeTo],
             'daysData' => $daysLogs,
         ]);
