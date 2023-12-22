@@ -53,11 +53,18 @@ class AdminController extends Controller
 
     public function update(EditUserRequest $request, string $id)
     {   // change ID
-        $request->validated();
-        $user = User::find($id);
-        $user->id = $request->id;
-        $user->save();
-        
+        $request->validated($request, $id);
+            $user = User::find($id);
+            $user->id = $request->id;
+            $user->name = $request->name;
+            // $user->emial = $request->email;
+            // $user->firstname = $request->firstname;
+            // $user->lastname = $request->lastname;
+            $user->is_active = $request->isActive;
+            $user->is_admin = $request->isAdmin;
+            $user->is_premia = $request->isPremia;
+            $user->save();
+
        return to_route('users.list');
     }
 

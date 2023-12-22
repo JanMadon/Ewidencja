@@ -4,12 +4,14 @@
             <h1 class="font-semibold text-2xl text-gray-800 leading-tight">Employee logs</h1>
         </template>
         <nav class="flex items-center justify-between p-1 bm-3">
-            <p class="text-xl">
+            <div class="text-xl">
                 <ChangeMonth @period="dateFromChangeMontchComponent" />
-            </p>
-            <p class="text-xl">
-                 User: {{ user.name }}
-            </p>
+            </div>
+            <div class="flex">
+                <PrimaryButton class="mr-5" @click.prevent="showAddRecordModal">Add new record</PrimaryButton>
+                <SecondaryButton class="mr-5" @click.prevent="goToBill">Bill</SecondaryButton>
+                <p class="text-xl">User: {{ user.name }}</p>
+            </div>
         </nav>
         <div class="flex-1 overflow-auto">
             <table class="min-w-full w-[900]">
@@ -123,8 +125,8 @@
                         </tbody>
                     </table>
                     <form @submit.prevent="addNewLog(dayData[0])" class=" flex flex-col justify-end items-center ">
-                        <label for="appt">Set new record:</label>
-                        <input v-model=formData.newRecord :formDate.date="dayData[0]" type="time" id="appt" name="appt"
+                        <label for="time">Set new record:</label>
+                        <input v-model=formData.newRecord :formDate.date="dayData[0]" type="time" id="time1"
                             required />
                         <div class="mt-6 flex justify-end mt-20">
                             <SecondaryButton @click.prevent="closeModal">Cancel</SecondaryButton>
@@ -133,7 +135,37 @@
                     </form>
                 </div>
             </div>
-            {{  }}
+            {{ }}
+
+        </Modal>
+        <Modal :show="addNewRecordModal">
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-900">
+                    Add new record for user: {{ user.name }}
+                </h2>
+
+                <form>
+                    <div class="flex justify-evenly my-10">
+                        <div class="flex flex-col text-center">
+                            <label for="date">Set date:</label>
+                            <input v-model="dayData" type="date" id="date" max="2030-12-31" required/>
+                        </div>
+                        <div class="flex flex-col text-center">
+                            <label for="time">Set time:</label>
+                            <input v-model=formData.newRecord type="time" id="time2" name="time" required />
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex justify-end mt-20">
+                        <SecondaryButton @click.prevent="closeModal">Cancel</SecondaryButton>
+                        <PrimaryButton @click.prevent="addNewLog(dayData)" class="ms-3">Add record</PrimaryButton>
+                    </div>
+                </form>
+
+
+
+            </div>
+
 
         </Modal>
     </AuthenticatedLayout>
@@ -145,7 +177,7 @@ import Modal from '@/Components/Modal.vue'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { router, useForm } from '@inertiajs/vue3';
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch } from 'vue';
 import ChangeMonth from '@/Components/app/ChangeMonth.vue';
 
 const props = defineProps({
@@ -160,7 +192,8 @@ const formData = useForm({
 })
 
 const isVisible = ref(false);
-const dayData = ref({});
+const addNewRecordModal = ref(false);
+const dayData = ref('');
 
 watch(() => props.recordAdded, showAlert)
 
@@ -169,15 +202,27 @@ function showModal(dayData) {
     isVisible.value = true;
 }
 
+function showAddRecordModal() {
+    addNewRecordModal.value = true
+}
+
 function closeModal() {
+    formData.newRecord = null;
     dayData.value = {};
     isVisible.value = false;
+    addNewRecordModal.value = false;
 }
 function addNewLog(day) {
-    // sprawdz czy takiego loga jużnie ma tego dnia
-
-    router.put(route('user.addLog', props.id), { 'newRecord': day + ' ' + formData.newRecord })
-    formData.newRecord = null;
+    if((day in props.daysData) && (props.daysData[day].logs.includes(formData.newRecord + ':00'))) {
+            alert('This record already exists.')
+            return
+    }
+    
+    if(day && formData.newRecord) {
+        router.put(route('user.addLog', props.id), { 'newRecord': day + ' ' + formData.newRecord })
+    } else {
+        alert('Enter the correct date and time')
+    }
     closeModal();
 }
 
@@ -192,5 +237,10 @@ function showAlert() {
         props.recordAdded = ''
     }
 }
+
+function goToBill() {
+    router.get(route('user.bill', props.id))
+}
+
 
 </script>

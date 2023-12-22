@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class EditUserRequest extends FormRequest
 {
@@ -21,8 +22,14 @@ class EditUserRequest extends FormRequest
      */
     public function rules(): array
     {
+
+        $id = $this->route('id');
+
         return [
-            'id' => ['required', 'unique:users'],
+            'id' => [
+                'required',
+                Rule::unique('users')->ignore($id, 'id'),
+            ],
         ];
     }
 }

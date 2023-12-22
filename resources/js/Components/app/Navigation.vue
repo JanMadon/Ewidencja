@@ -1,8 +1,8 @@
 <template>
     <nav class="w-[200px]">
         <div class="h-[80px] px-3 flex justify-center gap-3">
-            <Link :href="route('dashboard')" class="flex flex-col">
-                <ApplicationLogo class="block h-12 w-auto fill-current text-gray-800" />
+            <Link :href="route('dashboard')" class="flex flex-col items-center">
+                <ApplicationLogo class="block w-auto fill-current text-gray-800" />
                <p> Ewidecja </p>
             </Link>
         </div>

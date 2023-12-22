@@ -5,8 +5,16 @@
 Employee requests</h1>
         </template>
         <nav class="flex items-center justify-between p-1 bm-3">
-            <p>nawigacja</p>
-            <p>nawigacja</p>
+            <p>...</p>
+            <div class="flex py-2">
+                <div class="flex items-center mr-10">
+                    <input checked id="checked-checkbox" type="checkbox" v-model="onlyNotApproved"
+                        class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500   focus:ring-2">
+                    <label for="checked-checkbox" class="ms-2 text-sm font-medium text-gray-900">
+                        Only not approved
+                    </label>
+                </div>
+            </div>
         </nav>
         <div class="flex overflow-auto">
             <table class="min-w-full w-[900]">
@@ -37,7 +45,10 @@ Employee requests</h1>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(userRequests, index) of usersRequests.data" :class="{'bg-red-100': userRequests.status === 'rejected', 'bg-green-100': userRequests.status === 'accpeted'} " >
+                    <tr v-for="(userRequests, index) of usersRequests.data"
+                        v-show="!userRequests.approvedBy || !onlyNotApproved"
+                         :class="{'bg-red-100': userRequests.status === 'rejected',
+                          'bg-green-100': userRequests.status === 'accpeted'}" >
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                             {{ index+1 }}
                         </td>
@@ -93,11 +104,14 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import { Link, router } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
 
 const props = defineProps({
     usersRequests: Object,
 })
+
+const onlyNotApproved = ref(false)
 
 function acceptRequest(requestId) {
     router.post(route('request.accept'), {

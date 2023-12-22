@@ -77,7 +77,7 @@
 
                         <div class="ml-5 mb-4 mt-5 text-gray-700 text-sm font-bold flex ">Privileges:
                             <label class="relative inline-flex items-center cursor-pointer ml-6">
-                                <input v-model="formData.isAdmin" type="checkbox" class="sr-only peer" checked>
+                                <input v-model="formData.isAdmin" type="checkbox" class="sr-only peer" :disabled="user.id == attrs.auth.user.id">
                                 <div
                                     class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
                                 </div>
@@ -116,6 +116,7 @@ import { useAttrs } from 'vue';
 const props = defineProps({
     user: Object,
 })
+const admin = ref(false)
 
 const attrs = useAttrs()
 
@@ -152,22 +153,6 @@ function deleteUser() {
         }
     }
 }
-
-
-
-// console.log(formData)
-// const submitForm = async () => {
-//     const page = usePage();
-//     try {
-//         await usePage().inertia.post(route('user.update', [1]), formData.value);
-
-
-//     } catch (error) {
-//         console.error('Wystąpił błąd podczas wysyłania formularza:', error);
-//     }
-// }
-
-
 
 </script>
 

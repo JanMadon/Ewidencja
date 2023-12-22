@@ -2,14 +2,14 @@
 
 <template>
     <!-- <div class="min-h-screen bg-gray-100"> -->
-    <div class="h-screen bg-gray-50 flex w-full gap-4">
-        <Navigation class="border-solid border-2 border-gren-500" />
+    <div class="h-screen bg-gray-50 flex w-full gap-0">
+        <Navigation class="border-solid border-2 border-gren-600" />
         <!-- Page Heading -->
         <!-- Page Content -->
-        <main class="flex flex-col flex-1 px-4 overflow-hidden">
-            <nav class=" flex items-center justify-end  w-full border-solid border-2 border-red-800">
+        <main class="flex flex-col flex-1 overflow-hidden">
+            <nav class="flex items-center justify-end  w-full  border-b-2">
 
-                <header class="bg-white shadow w-full text-center" v-if="$slots.header">
+                <header class="  w-full text-center" v-if="$slots.header">
                     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                         <slot name="header" />
                     </div>
@@ -24,11 +24,11 @@
 
                         <div class="hidden sm:flex sm:items-center sm:ms-6">
                             <div class="ms-3 relative">
-                                <Dropdown align="right" width="48">
+                                <Dropdown class="pr-5">
                                     <template #trigger>
                                         <span class="inline-flex rounded-md">
                                             <button type="button"
-                                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                                                class="inline-flex items-center px-4 py-2 border border-transparent text-l leading-4 font-medium rounded-md text-gray-500 bg-indigo-100 hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
                                                 {{ $page.props.auth.user.name }}
 
                                                 <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg"
@@ -56,7 +56,7 @@
                 </div>
             </nav>
 
-            <div class="flex-1 flex flex-col overflow-hidden">
+            <div class="flex-1 flex flex-col overflow-hidden mx-5">
                 <slot />
             </div>
         </main>
