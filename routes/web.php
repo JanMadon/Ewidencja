@@ -109,8 +109,10 @@ Route::controller(LogController::class)
     ->group(function(){
         Route::get('/log', 'list')
         ->name('log.list');
-        Route::post('/log', 'setLog')
+        Route::post('/log', 'uploadLog')
         ->name('log.set');
+        Route::delete('/log', 'clearRawLogsTable')
+        ->name('log.clear');
     });
 
 Route::get('/dashboard', function () {

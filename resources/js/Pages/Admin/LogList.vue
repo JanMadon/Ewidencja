@@ -4,18 +4,20 @@
         <template #header>
             <h1 class="font-semibold text-2xl text-gray-800 leading-tight">Recent raw logs</h1>
         </template>
-        <nav class="flex justify-end p-1 bm-3">
-            <PrimaryButton @click="updateLog">send log to DB</PrimaryButton>
+        <nav class="flex justify-end py-2 bm-3 gap-5">
+            <PrimaryButton @click="uploadLogs">upload log to DB</PrimaryButton>
+            <DangerButton @click.prevent="clearRawlogDB">clear rawLog DB </DangerButton>
         </nav>
         <div class="flex justify-center overflow-auto">
-            <table class=" w-[600]">
+            <p v-if="!logs.data.length">The database does not contain any records.</p>
+            <table v-else class=" w-[600]">
                 <thead class="bg-gray-200 border-b">
                     <tr>
                         <th class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                            Checkbox
+                            LP
                         </th>
                         <th class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                            ID
+                            UserId
                         </th>
                         <th class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
                             Name
@@ -50,14 +52,6 @@
                     </tr>
                 </tbody>
             </table>
-            <div class="py-8 text-center text-sm text-gray-400">
-                <!-- {{ logs }} -->
-            </div>
-            <div ref="loadMoreIntersect">
-
-
-            </div>
-
         </div>
         <div class=" flex justify-center">
             <Link
@@ -78,6 +72,7 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { router, Link } from '@inertiajs/vue3';
 import { ref, onMounted } from 'vue';
 import ChangeMonth from '@/Components/app/ChangeMonth.vue'
+import DangerButton from '@/Components/DangerButton.vue';
 
 
 
@@ -88,9 +83,16 @@ const props = defineProps({
     logs: Object
 })
 
-function updateLog() {
-    // TO DO czy napewno???
-    router.post(route('log.set'));
+function uploadLogs() {
+    if(confirm('Are you sure you want to insert data into the database from a file?')) {
+        router.post(route('log.set'));
+    }
+}
+
+function clearRawlogDB() {
+    if(confirm('Are you sure you want to clear the raw_logs tables from the database?')) {
+        router.delete(route('log.clear'));
+    }
 }
 
 const dateFromChangeMontchComponent = (date) => {
