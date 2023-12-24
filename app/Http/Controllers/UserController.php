@@ -70,6 +70,8 @@ class UserController extends Controller
 
         return Inertia::render('User/Logs', [
             'id' => Auth::id(),
+            'setTime' => [],
+            'daysData' => []
         ]);
     }
 

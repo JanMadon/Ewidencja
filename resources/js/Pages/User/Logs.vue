@@ -1,5 +1,9 @@
 <template>
     <AuthenticatedLayout>
+        <template #header>
+            <h1 class="font-semibold text-2xl text-gray-800 leading-tight">User logs</h1>
+        </template>
+
         <nav class="flex items-center justify-between p-1 bm-3">
             <p>
                 <ChangeMonth @period="dateFromChangeMontchComponent" />
@@ -7,7 +11,8 @@
             <p>...</p>
         </nav>
         <div class="flex-1 overflow-auto">
-            <table class="min-w-full w-[900]">
+            <p v-if="!daysData.length" class="text-center pt-10">The database does not contain any records.</p>
+            <table v-else class="min-w-full w-[900]">
                 <thead class="bg-gray-200 border-b">
                     <tr>
                         <th class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
@@ -174,7 +179,6 @@ function addNewLog(day) {
 }
 
 const dateFromChangeMontchComponent = (period) => {
-    console.log(period)
      router.post(route('my.logs.period'), {'id': props.id ,'date': period });
 }
 

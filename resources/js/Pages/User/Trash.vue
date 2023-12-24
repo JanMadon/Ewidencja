@@ -1,11 +1,16 @@
 <template>
     <AuthenticatedLayout>
+        <template #header>
+            <h1 class="font-semibold text-2xl text-gray-800 leading-tight">User trash</h1>
+        </template>
         <nav class="flex items-center justify-between p-1 bm-3">
             <p>...</p>
             <p>...</p>
         </nav>
         <div class="flex overflow-auto">
-            <table class="min-w-full w-[900]">
+            <p v-if="!usersRequests.data.length"
+            class="text-center w-full pt-10">The database does not contain any records.</p>
+            <table v-else class="min-w-full w-[900]">
                 <thead class="text-center bg-gray-300 border-b">
                     <tr>
                         <th class="text-sm font-medium text-gray-900 px-6 py-4 text-center">
@@ -29,11 +34,10 @@
                         <th class="text-sm font-medium text-gray-900 px-6 py-4 text-center">
                             Options
                         </th>
-
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(userRequests, index) of usersRequests.data" :class="{'bg-red-100': userRequests.status === 'rejected', 'bg-green-100': userRequests.status === 'accpeted'} " >
+                    <tr v-for="(userRequests, index) of usersRequests.data" >
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                             {{ index+1 }}
                         </td>

@@ -91,6 +91,8 @@ class AdminController extends Controller
         return Inertia::render('Admin/UserLogs', [
             'id' => $id,
             'user' => User::find($id) ?? [],
+            'setTime' => [],
+            'daysData' => [],
         ]);
     }
 
@@ -223,10 +225,12 @@ class AdminController extends Controller
                 'createdAt' => Carbon::parse($log['created_at'])->format('Y-m-d H:i:s'),
             ];
         }
-        $usersRequests1 = $this->arrPaginate($usersRequests, 10);
-        $usersRequests1->setPath($request->url());
+        $usersRequests = $this->arrPaginate($usersRequests, 10);
+        $usersRequests->setPath($request->url());
 
-        return Inertia::render('Admin/UsersRequests', ['usersRequests' => $usersRequests1]);
+        return Inertia::render('Admin/UsersRequests', [
+            'usersRequests' => $usersRequests
+        ]);
     }
 
     public function requestAccept(Request $request)

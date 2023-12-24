@@ -1,8 +1,7 @@
 <template>
     <AuthenticatedLayout>
         <template #header>
-            <h1 class="font-semibold text-2xl text-gray-800 leading-tight">
-Employee requests</h1>
+            <h1 class="font-semibold text-2xl text-gray-800 leading-tight">Employee requests</h1>
         </template>
         <nav class="flex items-center justify-between p-1 bm-3">
             <p>...</p>
@@ -17,7 +16,9 @@ Employee requests</h1>
             </div>
         </nav>
         <div class="flex overflow-auto">
-            <table class="min-w-full w-[900]">
+            <p v-if="!usersRequests.data.length"
+            class="text-center w-full pt-10">The database does not contain any records.</p>
+            <table v-else class="min-w-full w-[900]">
                 <thead class="text-center bg-gray-300 border-b">
                     <tr>
                         <th class="text-sm font-medium text-gray-900 px-6 py-4 text-center">
