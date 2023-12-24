@@ -62,12 +62,13 @@ Route::controller(AdminController::class)
         ->name('users.requests');
         Route::post('/users/requests', 'requestAccept')
         ->name('request.accept');
+        Route::delete('/users/requests/{requestId}', 'moveToTrash')
+        ->name('request.toTrash');
+        Route::get('/users/trash', 'trash')
+        ->name('users.trash');
         Route::get('/users/history', function () {
             return Inertia::render('Admin/History'); })
         ->name('users.hostory');
-        Route::get('/users/trash', function () {
-            return Inertia::render('Admin/Trash'); })
-        ->name('users.trash');
     });
 
 Route::controller(UserController::class)
@@ -85,10 +86,9 @@ Route::controller(UserController::class)
         ->name('my.addLogRequest');
     Route::get('/my/requests', 'getRequests')
         ->name('my.requests');
-    Route::post('/my/requests', 'deleteRequests')
+    Route::delete('/my/requests/{requestId}', 'deleteRequests')
         ->name('my.deleteRequest');
-    Route::get('/my/trash', function () {
-        return Inertia::render('User/Trash'); })
+    Route::get('/my/trash', 'trash')
     ->name('my.trash');
 
 

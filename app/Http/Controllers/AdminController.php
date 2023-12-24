@@ -18,7 +18,8 @@ use Illuminate\Support\Facades\Auth;
 class AdminController extends Controller
 {
 
-    public function dashboard() {
+    public function dashboard()
+    {
         // funckcja na dabeli raw_log sprawdzająca jaki uzytkownik ma dziś nie parszystą liczbę odbić
         // czyli jest w pracy   TODO DO IMPLENETACJI
         // $today = Carbon::now()->format('Y-m-d');
@@ -63,30 +64,29 @@ class AdminController extends Controller
     public function update(EditUserRequest $request, string $id)
     {   // change ID
         $request->validated($request, $id);
-            $user = User::find($id);
-            $user->id = $request->id;
-            $user->name = $request->name;
-            // $user->emial = $request->email;
-            // $user->firstname = $request->firstname;
-            // $user->lastname = $request->lastname;
-            $user->is_active = $request->isActive;
-            $user->is_admin = $request->isAdmin;
-            $user->is_premia = $request->isPremia;
-            $user->save();
+        $user = User::find($id);
+        $user->id = $request->id;
+        $user->name = $request->name;
+        // $user->emial = $request->email;
+        // $user->firstname = $request->firstname;
+        // $user->lastname = $request->lastname;
+        $user->is_active = $request->isActive;
+        $user->is_admin = $request->isAdmin;
+        $user->is_premia = $request->isPremia;
+        $user->save();
 
-       return to_route('users.list');
+        return to_route('users.list');
     }
 
     public function delete(string $id)
     {
         $user = User::find($id);
         dd($user);
-        $user ->delete();
-       return to_route('users.list');
-
+        $user->delete();
+        return to_route('users.list');
     }
 
-    public function userLogs( string $id)
+    public function userLogs(string $id)
     {
         return Inertia::render('Admin/UserLogs', [
             'id' => $id,
@@ -102,7 +102,7 @@ class AdminController extends Controller
         //dd($timeFrom, $timeTo);
 
         $daysLogs = $this->getDataForUser($id, $timeFrom, $timeTo);
-       // dd($daysLogs);
+        // dd($daysLogs);
 
         return Inertia::render('Admin/UserLogs', [
             'id' => $id,
@@ -136,9 +136,10 @@ class AdminController extends Controller
         ]);
     }
 
-    public function getBill(string $id) {
+    public function getBill(string $id)
+    {
         $user = User::find($id);
-        return Inertia::render('Admin/UserBill', ['id' => $id, 'data'=>[], 'user' => $user,]);
+        return Inertia::render('Admin/UserBill', ['id' => $id, 'data' => [], 'user' => $user,]);
     }
 
     public function getBillPeriod(Request $request, string $id)
@@ -152,16 +153,16 @@ class AdminController extends Controller
         $errors = 0;
         $workTime = CarbonInterval::seconds(00);
         $doubleHours = 0;
-        $salary = Salary::where('employee_id', $id)->orderBy('valid_from','desc')->first()->salary ?? 0;
+        $salary = Salary::where('employee_id', $id)->orderBy('valid_from', 'desc')->first()->salary ?? 0;
         $salaryVaildFrom = '2023-01';
         $salaryVaildto = 'to implement';
 
-        foreach($daysLogs as $daydata) {
-            if(!$daydata['is_correct']){
+        foreach ($daysLogs as $daydata) {
+            if (!$daydata['is_correct']) {
                 $errors++;
                 continue;
             }
-            if($daydata['premia']) {
+            if ($daydata['premia']) {
                 $doubleHours++;
             }
             $workTime->add(CarbonInterval::createFromFormat('H:i:s', $daydata['work_time']))->cascade();
@@ -179,11 +180,12 @@ class AdminController extends Controller
                 'salary' => $salary,
                 'salaryVaildFrom' => $salaryVaildFrom,
                 'salaryVaildTo' => $salaryVaildto
-        ],
+            ],
         ]);
     }
 
-    public function setNewSalary(Request $request, string $id){
+    public function setNewSalary(Request $request, string $id)
+    {
 
         $user = User::find($id);
         $salary = new Salary();
@@ -195,7 +197,7 @@ class AdminController extends Controller
 
         return Inertia::render('Admin/UserBill', [
             'id' => $id,
-            'data'=>[],
+            'data' => [],
             'user' => $user,
             'newSalaryAdded' => true,
         ]);
@@ -250,6 +252,42 @@ class AdminController extends Controller
         }
 
         return to_route('users.requests');
+    }
+
+    public function moveToTrash(Request $request)
+    {
+        $log = AddedLogs::find($request->requestId);
+        $log->is_active = false;
+        $log->save();
+
+        return to_route('users.requests');
+    }
+
+    public function trash(Request $request)
+    {
+
+        $usersRequests = [];
+
+        $data = AddedLogs::where('is_active', false)
+            ->orderBy('id', 'desc')
+            ->get()
+            ->toArray();
+
+        foreach ($data as $log) {
+            $usersRequests[] = [
+                'logId' => $log['id'],
+                'userId' => $log['employee_id'],
+                'userName' => User::find($log['employee_id'])->name ?? null,
+                'approvedBy' => User::find($log['approved_by'])->name ?? null,
+                'status' => $this->AddedLogStatus($log['id']),
+                'createdAt' => Carbon::parse($log['created_at'])->format('Y-m-d H:i:s'),
+            ];
+        }
+        $usersRequests = $this->arrPaginate($usersRequests, 10);
+
+        $usersRequests->setPath($request->url());
+
+        return Inertia::render('Admin/Trash', ['usersRequests' => $usersRequests]);
     }
 
     protected function arrPaginate($array, $perPage = 5, $page = null)

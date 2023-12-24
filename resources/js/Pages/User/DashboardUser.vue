@@ -4,7 +4,7 @@
             <p>
                 <ChangeMonth @period="dateFromChangeMontchComponent" />
             </p>
-            <p>nawigacja</p>
+            <p>...</p>
         </nav>
         <div class="overflow-x-auto">
 
@@ -59,7 +59,7 @@
                             </tr>
                             <tr class="bg-gray-200">
                                 <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
-                                    Salary 
+                                    Salary
                                     <p class="text-xs">valid from</p>
                                 </td>
                                 <td class="text-center">
@@ -78,11 +78,7 @@
                         </tbody>
 
                     </table>
-                    <!-- Przycisk submit zajmuje obie kolumny -->
-                    <div>
-                        <SecondaryButton @click.prevent="returnPage" class="mr-5 mt-5">return</SecondaryButton>
-                        <!-- <PrimaryButton type="submit">save</PrimaryButton> -->
-                    </div>
+
                 </form>
             </div>
         </div>
@@ -130,7 +126,7 @@ function setNewSalary() {
     console.log('ustaw nową stawkę')
     }
     newSalaty.value = 0
-    newSalatyValidFrom.value = 0 
+    newSalatyValidFrom.value = 0
     salatyInput.value = false
 }
 

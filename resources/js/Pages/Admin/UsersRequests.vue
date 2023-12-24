@@ -77,6 +77,11 @@ Employee requests</h1>
                             <SecondaryButton class="scale-90" @click.prevent="undoRequest(userRequests.logId)">
                                 Undo
                             </SecondaryButton>
+                            <DangerButton v-show="userRequests.status === 'rejected'" class="scale-90"
+                                                @click.prevent="moveToTrash(userRequests.logId)">
+                                to trash
+                            </DangerButton>
+
                         </td>
 
                     </tr>
@@ -133,13 +138,13 @@ function undoRequest(requestId) {
     router.post(route('request.accept'), {
         'action' : 'undo',
         'requestId': requestId,
-
     });
 }
 
-function showUser(id) {
-    router.visit(route('user.show', id));
+function moveToTrash(requestId) {
+ router.delete(route('request.toTrash', requestId));
 }
+
 
 
 </script>

@@ -81,7 +81,6 @@ class UserController extends Controller
         //dd($timeFrom, $timeTo);
 
         $daysLogs = $this->getDataForUser($id, $timeFrom, $timeTo);
-        //dd($daysLogs);
 
         return Inertia::render('User/Logs', [
             'id' => $id,
@@ -92,7 +91,7 @@ class UserController extends Controller
 
     public function addLogRequest(Request $reguest)
     {
-        // tzeba zrobić walidacja która sprawdza czy DANY user nie dodał już logu o danej godzinie i czy nie ma tej godziny w RawLog 
+        // tzeba zrobić walidacja która sprawdza czy DANY user nie dodał już logu o danej godzinie i czy nie ma tej godziny w RawLog
         // id jest wysyłane w url, wiec to raczej dla admina
         $id = Auth::id();
         $data = [
@@ -115,7 +114,7 @@ class UserController extends Controller
 
     public function getRequests(Request $request)
     {
-        //można by sprawdzać jaki user jest zalogowany 
+        //można by sprawdzać jaki user jest zalogowany
         $usersRequests = [];
         $data = AddedLogs::where('employee_id', Auth::user()->id)
             ->where('is_active', true)
@@ -146,6 +145,32 @@ class UserController extends Controller
         $log->save();
 
         return to_route('my.requests');
+    }
+
+    public function trash(Request $request) {
+
+        $usersRequests = [];
+
+        $data = AddedLogs::where('employee_id', Auth::user()->id)
+            ->where('is_active', false)
+            ->orderBy('id', 'desc')
+            ->get()
+            ->toArray();
+
+        foreach ($data as $log) {
+            $usersRequests[] = [
+                'logId' => $log['id'],
+                'userId' => $log['employee_id'],
+                'userName' => User::find($log['employee_id'])->name ?? null,
+                'approvedBy' => User::find($log['approved_by'])->name ?? null,
+                'status' => $this->AddedLogStatus($log['id']),
+                'createdAt' => Carbon::parse($log['created_at'])->format('Y-m-d H:i:s'),
+            ];
+        }
+        $usersTrash = $this->arrPaginate($usersRequests, 10);
+        $usersTrash->setPath($request->url());
+
+        return Inertia::render('User/Trash', ['usersRequests' => $usersTrash]);
     }
 
     public function arrPaginate($array, $perPage = 5, $page = null)
@@ -192,7 +217,7 @@ class UserController extends Controller
 
     protected function getDataForUser(String $id, $timeFrom, $timeTo,): array
     {
-        
+
         $logs = RawLogs::select('date_time')
             ->where('raw_logs.date_time', '>', $timeFrom)
             ->where('raw_logs.date_time', '<', $timeTo)
@@ -204,10 +229,10 @@ class UserController extends Controller
                     ->where('employee_id', $id)
                     ->where('is_approved', true)
                     ->where('is_active', true)
+                    ->where('is_active', true)
             )
             ->orderBy('date_time')
             ->get()->toArray();
-        // dd($logs);
 
         $daysLogs = [];
         foreach ($logs as $log) {
@@ -217,7 +242,7 @@ class UserController extends Controller
         }
         // dd($daysLogs);
 
-        //czy poprawna liczba rekordów danego dnia 
+        //czy poprawna liczba rekordów danego dnia
         foreach ($daysLogs as $date => $Logs) {
 
             $daysLogs[$date]['num_logs'] = count($Logs['logs']);

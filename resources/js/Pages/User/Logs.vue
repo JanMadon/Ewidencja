@@ -4,8 +4,7 @@
             <p>
                 <ChangeMonth @period="dateFromChangeMontchComponent" />
             </p>
-            <p>nawigacja</p>
-            {{ $props.added }}
+            <p>...</p>
         </nav>
         <div class="flex-1 overflow-auto">
             <table class="min-w-full w-[900]">
@@ -175,6 +174,7 @@ function addNewLog(day) {
 }
 
 const dateFromChangeMontchComponent = (period) => {
+    console.log(period)
      router.post(route('my.logs.period'), {'id': props.id ,'date': period });
 }
 
@@ -183,7 +183,7 @@ function showAlert() {
         alert('Rekord ' + props.recordAdded + ' has been sent for admin approval')
         location.reload(true);
         props.recordAdded = ''
-    } 
+    }
 }
 
 

@@ -1,8 +1,8 @@
 <template>
     <AuthenticatedLayout>
         <nav class="flex items-center justify-between p-1 bm-3">
-            <p>nawigacja</p>
-            <p>nawigacja</p>
+            <p>...</p>
+            <p>...</p>
         </nav>
         <div class="flex overflow-auto">
             <table class="min-w-full w-[900]">
@@ -52,10 +52,11 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 ">
                             {{ userRequests.createdAt }}
                         </td>
-                
+
                         <td class=" py-4 whitespace-nowrap text-center font-medium text-gray-900 ">
-                            <SecondaryButton v-show="!userRequests.approvedBy" class="scale-90" @click.prevent="deleteRequest(userRequests.logId)">
-                                delete
+                            <SecondaryButton v-show="!userRequests.approvedBy" class="scale-90"
+                             @click.prevent="moveToTrash(userRequests.logId)">
+                                to trash
                             </SecondaryButton>
                         </td>
                     </tr>
@@ -74,7 +75,6 @@
             Next page
             </Link>
         </div>
-        {{ usersRequests.data[1] }}
     </AuthenticatedLayout>
 </template>
 
@@ -88,10 +88,8 @@ const props = defineProps({
     usersRequests: Object,
 })
 
-function deleteRequest(requestId) {
-    router.post(route('my.deleteRequest'), {
-        'requestId': requestId,
-    });
+function moveToTrash(requestId) {
+    router.delete(route('my.deleteRequest', requestId));
 }
 
 
