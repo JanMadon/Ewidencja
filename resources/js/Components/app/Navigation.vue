@@ -13,10 +13,11 @@
                 <NavLink :href="route('dashboard')" :active="$page.props.route_name === 'dashboard'">Dashboard</NavLink>
                 <NavLink :href="route('dashboardAdmin')" :active="$page.props.route_name === 'dashboardAdmin'">Admin Dashboard</NavLink>
                 <NavLink :href="route('users.list')" :active="$page.props.route_name === 'users.list'">Employees</NavLink>
-                <NavLink :href="route('users.requests')" :active="$page.props.route_name === 'users.requests'">Users requests</NavLink>
+                <NavLink :href="route('users.requests')" :active="$page.props.route_name === 'users.requests'">Requests</NavLink>
                 <NavLink :href="route('log.list')" :active="$page.props.route_name === 'log.list'">Log List</NavLink>
-                <NavLink :href="route('users.hostory')" :active="$page.props.route_name === 'users.hostory'">History</NavLink>
                 <NavLink :href="route('users.trash')" :active="$page.props.route_name === 'users.trash'">Trash</NavLink>
+                <NavLink :href="route('users.hostory')" :active="$page.props.route_name === 'users.hostory'">History</NavLink>
+
             </div>
             <!-- <div v-else class="py-3 "> -->
             <div class="py-3 ">

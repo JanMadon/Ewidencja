@@ -217,7 +217,7 @@ function addNewLog(day) {
             alert('This record already exists.')
             return
     }
-    
+
     if(day && formData.newRecord) {
         router.put(route('user.addLog', props.id), { 'newRecord': day + ' ' + formData.newRecord })
     } else {

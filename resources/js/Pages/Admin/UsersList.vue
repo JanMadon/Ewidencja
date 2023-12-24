@@ -1,7 +1,7 @@
 <template>
     <AuthenticatedLayout>
         <template #header>
-            <h1 class="font-semibold text-2xl text-gray-800 leading-tight">Employees - List</h1>
+            <h1 class="font-semibold text-2xl text-gray-800 leading-tight">Employees list</h1>
         </template>
         <nav class="flex items-center justify-between p-1 bm-3">
             <p>...</p>
@@ -52,9 +52,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(user, index) of users" 
+                    <tr v-for="(user, index) of users"
                         v-show="user.is_active || !onlyActive"
-                        @dblclick="showUserLogs(user.id)" 
+                        @dblclick="showUserLogs(user.id)"
                         class="bg-white border-b transition duration-300 ease-in-out hover:bg-blue-100 cursor-pointer">
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                             <input type="checkbox">
@@ -127,6 +127,7 @@ function showUserLogs(id) {
 
 function createNewUser() {
     console.log('create new user')
+    router.get(route('user.create'));
 }
 
 

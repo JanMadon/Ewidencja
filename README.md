@@ -1,5 +1,6 @@
 
 ## Rozpoczęcie projektu
+dodałem usera do grupy www-data, aby móc dodawać plik list.txt ko katalogu /storage/app
 - chwilowo Użytkownicy są logowani w wytwarzani w standardowym mechanizmie devkita laravela...
 
 

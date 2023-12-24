@@ -54,6 +54,10 @@ Route::controller(AdminController::class)
         ->name('user.update');
         Route::delete('/user/edit/{id}', 'delete')
         ->name('user.delete');
+        Route::get('/user/create', 'create')
+        ->name('user.create');
+        Route::post('/user/create', 'createPost')
+        ->name('user.createPost');
         Route::get('/users/requests', 'requestsList')
         ->name('users.requests');
         Route::post('/users/requests', 'requestAccept')

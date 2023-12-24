@@ -42,7 +42,16 @@ class AdminController extends Controller
 
     public function create()
     {
-        //
+
+        //dd('jetsm');
+        return Inertia::render('Admin/UserCreate');
+    }
+
+    public function createPost(Request $request)
+    {
+
+        dd($request);
+        return Inertia::render('Admin/UserCreate');
     }
 
     public function edit(string $id = null)
@@ -78,7 +87,7 @@ class AdminController extends Controller
     }
 
     public function userLogs( string $id)
-    {   
+    {
         return Inertia::render('Admin/UserLogs', [
             'id' => $id,
             'user' => User::find($id) ?? [],
@@ -106,7 +115,7 @@ class AdminController extends Controller
     public function addLog(Request $reguest, string $id)
     {
 
-        // tzeba zrobić walidacja która sprawdza czy DANY user nie dodał już logu o danej godzinie i czy nie ma tej godziny w RawLog 
+        // tzeba zrobić walidacja która sprawdza czy DANY user nie dodał już logu o danej godzinie i czy nie ma tej godziny w RawLog
         // id jest wysyłane w url, wiec to raczej dla admina
 
         $data = [
@@ -185,8 +194,8 @@ class AdminController extends Controller
         $salary->save();
 
         return Inertia::render('Admin/UserBill', [
-            'id' => $id, 
-            'data'=>[], 
+            'id' => $id,
+            'data'=>[],
             'user' => $user,
             'newSalaryAdded' => true,
         ]);
@@ -194,7 +203,7 @@ class AdminController extends Controller
 
     public function requestsList(Request $request)
     {
-        //można by sprawdzać jaki user jest zalogowany 
+        //można by sprawdzać jaki user jest zalogowany
         $usersRequests = [];
 
         $data = AddedLogs::where('is_active', true)
@@ -265,7 +274,7 @@ class AdminController extends Controller
 
     protected function getDataForUser(String $id, $timeFrom, $timeTo,): array
     {
-        
+
         $logs = RawLogs::select('date_time')
             ->where('raw_logs.date_time', '>', $timeFrom)
             ->where('raw_logs.date_time', '<', $timeTo)
@@ -290,7 +299,7 @@ class AdminController extends Controller
         }
         // dd($daysLogs);
 
-        //czy poprawna liczba rekordów danego dnia 
+        //czy poprawna liczba rekordów danego dnia
         foreach ($daysLogs as $date => $Logs) {
 
             $daysLogs[$date]['num_logs'] = count($Logs['logs']);
