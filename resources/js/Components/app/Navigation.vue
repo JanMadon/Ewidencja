@@ -10,7 +10,7 @@
             <!-- <CreateNewDropdown /> -->
             <div v-if="$page.props.auth.user.is_admin" class="py-3 ">
                 <!-- <pre>{{$page.props.auth.user.is_admin}}</pre> -->
-                <NavLink :href="route('dashboard')" :active="$page.props.route_name === 'dashboard'">Dashboard</NavLink>
+                <!-- <NavLink :href="route('dashboard')" :active="$page.props.route_name === 'dashboard'">Dashboard</NavLink> -->
                 <NavLink :href="route('dashboardAdmin')" :active="$page.props.route_name === 'dashboardAdmin'">Admin Dashboard</NavLink>
                 <NavLink :href="route('users.list')" :active="$page.props.route_name === 'users.list'">Employees</NavLink>
                 <NavLink :href="route('users.requests')" :active="$page.props.route_name === 'users.requests'">Requests</NavLink>
