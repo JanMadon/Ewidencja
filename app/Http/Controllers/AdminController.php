@@ -22,16 +22,22 @@ class AdminController extends Controller
     {
         // funckcja na dabeli raw_log sprawdzająca jaki uzytkownik ma dziś nie parszystą liczbę odbić
         // czyli jest w pracy   TODO DO IMPLENETACJI
-        // $today = Carbon::now()->format('Y-m-d');
-        // $currentEpmloyees = RawLogs::where('date_time', '>' ,$today)->first()->user;
+         $today = Carbon::now()->format('Y-m-d');
+         $tomorrow = Carbon::tomorrow()->format('Y-m-d');
+         $logs = RawLogs::where('date_time', '>' ,$today)
+            ->where('date_time', '<' ,$tomorrow)
+            ->get()
+            ->groupBy('employee_id');
 
-        // dd($currentEpmloyees->name);
-        // $users = User::where('id', $currentEpmloyees);
-        $users = [];
+         $usersLogs = [];
 
+         foreach($logs as $employeeId => $employeeLogs) {
+            $userName = User::find($employeeId)->name ?? '';
+            $usersLogs[$userName] = $employeeLogs;
+         }
 
         return Inertia::render('Admin/DashboardAdmin', [
-            'users' => $users
+            'usersLogs' => $usersLogs
         ]);
     }
 
