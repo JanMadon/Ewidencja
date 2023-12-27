@@ -1,12 +1,21 @@
 <template>
     <AuthenticatedLayout>
-       
+
         <template #header>
             <h1 class="font-semibold text-2xl text-gray-800 leading-tight">Recent raw logs</h1>
         </template>
-        <nav class="flex justify-end py-2 bm-3 gap-5">
-            <PrimaryButton @click="uploadLogs">upload log to DB</PrimaryButton>
-            <DangerButton @click.prevent="clearRawlogDB">clear rawLog DB </DangerButton>
+        <nav class="flex justify-between items-center">
+            <div>
+                <p>first: {{ first.date_time }} </p>
+                <p>last: {{ last.date_time }}</p>
+            </div>
+            <div>
+                <p class="font-bold">total:{{ numOfLogs }}</p>
+            </div>
+            <div class="flex justify-end py-2 bm-3 gap-3">
+                <PrimaryButton @click="uploadLogs">upload log</PrimaryButton>
+                <DangerButton @click.prevent="clearRawlogDB">clear rawLog</DangerButton>
+            </div>
         </nav>
         <div class="flex justify-center overflow-auto">
             <p v-if="!logs.data.length">The database does not contain any records.</p>
@@ -80,17 +89,20 @@ import DangerButton from '@/Components/DangerButton.vue';
 const setTime = ref('')
 
 const props = defineProps({
-    logs: Object
+    logs: Object,
+    first: Object,
+    last: Object,
+    numOfLogs: Number
 })
 
 function uploadLogs() {
-    if(confirm('Are you sure you want to insert data into the database from a file?')) {
+    if (confirm('Are you sure you want to insert data into the database from a file?')) {
         router.post(route('log.set'));
     }
 }
 
 function clearRawlogDB() {
-    if(confirm('Are you sure you want to clear the raw_logs tables from the database?')) {
+    if (confirm('Are you sure you want to clear the raw_logs tables from the database?')) {
         router.delete(route('log.clear'));
     }
 }

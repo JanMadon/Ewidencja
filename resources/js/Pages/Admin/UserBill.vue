@@ -143,7 +143,7 @@ watch(() => [props.data.workTime, selectedOption.value, customOption.value], cou
 watch(() => props.newSalaryAdded, showAlertNewSalaryAdded)
 
 function setNewSalary() {
-    if( confirm(`Should I set a new salary ${newSalaty.value} PLN from ${newSalatyValidFrom.value}?`) ){
+    if(confirm(`Should I set a new salary ${newSalaty.value} PLN from ${newSalatyValidFrom.value}?`) ){
         router.put(route('user.bill.setSalary', [props.id]), {
             'newSalry': newSalaty.value,
             'validFrom': newSalatyValidFrom.value

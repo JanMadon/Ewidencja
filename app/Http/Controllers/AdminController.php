@@ -213,7 +213,9 @@ class AdminController extends Controller
         $salary->set_by = Auth::id();
         $salary->employee_id = $user->id;
         $salary->salary = $request->newSalry;
-        $salary->valid_from = $request->validFrom . '-01';
+        if($request->validFrom) {
+            $salary->valid_from = $request->validFrom . '-01';
+        }
         $salary->save();
 
         return Inertia::render('Admin/UserBill', [

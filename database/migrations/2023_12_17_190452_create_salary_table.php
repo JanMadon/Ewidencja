@@ -16,7 +16,7 @@ return new class extends Migration
             $table->integer('set_by');
             $table->integer('employee_id');
             $table->integer('salary');
-            $table->date('valid_from');
+            $table->date('valid_from')->default('2000-01-01');
             $table->timestamps();
         });
     }

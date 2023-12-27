@@ -10,9 +10,18 @@ class LogController extends Controller
 {
     public function list()
     {
-         $logs = RawLogs::with('user')->orderBy('date_time', 'desc')->simplePaginate(20);
-        
-        return Inertia::render('Admin/LogList', ['logs' => $logs]);
+        $logs = RawLogs::with('user')->orderBy('date_time', 'desc');
+
+        $first = RawLogs::with('user')->orderBy('date_time')->first();
+        $numOfLogs = $logs->count();
+        $last = $logs->first();
+        $logs = $logs->simplePaginate(20);
+        return Inertia::render('Admin/LogList', [
+            'logs' => $logs,
+            'numOfLogs' => $numOfLogs,
+            'first' => $first,
+            'last' => $last,
+        ]);
     }
 
     public function uploadLog()
