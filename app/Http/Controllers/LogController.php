@@ -18,7 +18,7 @@ class LogController extends Controller
     public function uploadLog()
     {
         $rowFormat = '/^\d{10}\s+\d{4}\/\d{2}\/\d{2}\s+\d{2}:\d{2}:\d{2}$/';
-        $logs = Storage::get('list3.txt');
+        $logs = Storage::get('listTT.txt');
         $rows = explode("\n", $logs);
         $data = [];
         $keys = ['employee_id', 'date_time'];

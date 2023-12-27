@@ -188,7 +188,7 @@ function setOptionYaer(period) {
 
     switch (year) {
         case '2023': // sprzwdz godziny dla 2023
-            monthValue = [168, 168, 168, 168, 160, 160, 184, 168, 168, 184, 152, 160]
+            monthValue = [168, 160, 184, 152, 168, 168, 168, 176, 168, 176, 160, 152]
             break;
         case '2024':
             monthValue = [168, 168, 168, 168, 160, 160, 184, 168, 168, 184, 152, 160]
@@ -213,7 +213,7 @@ function setOptionYaer(period) {
 }
 
 function returnPage() {
-        router.visit(route('users.list') );
+        router.visit(route('user.logs', props.id) );
 }
 
 const dateFromChangeMontchComponent = (period) => {

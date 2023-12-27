@@ -147,7 +147,11 @@ class AdminController extends Controller
     public function getBill(string $id)
     {
         $user = User::find($id);
-        return Inertia::render('Admin/UserBill', ['id' => $id, 'data' => [], 'user' => $user,]);
+        return Inertia::render('Admin/UserBill', [
+            'id' => $id,
+            'data' => [],
+            'user' => $user,
+        ]);
     }
 
     public function getBillPeriod(Request $request, string $id)
@@ -175,7 +179,8 @@ class AdminController extends Controller
             }
             $workTime->add(CarbonInterval::createFromFormat('H:i:s', $daydata['work_time']))->cascade();
         }
-        $workTime = $workTime->format('%H:%I:%S');
+        $workTime = $workTime->format('%D:%H:%I:%S');
+        $workTime = $this->changeTimeFormat($workTime);
 
         return Inertia::render('Admin/UserBill', [
             'id' => $id,
@@ -190,6 +195,14 @@ class AdminController extends Controller
                 'salaryVaildTo' => $salaryVaildto
             ],
         ]);
+    }
+
+    protected function changeTimeFormat($time){
+        list($days, $hours, $minutes, $seconds) = explode(':', $time);
+        $hours += $days * 24;
+
+        return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
+
     }
 
     public function setNewSalary(Request $request, string $id)

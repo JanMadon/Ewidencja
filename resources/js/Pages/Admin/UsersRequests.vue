@@ -16,8 +16,8 @@
             </div>
         </nav>
         <div class="flex overflow-auto">
-            <p v-if="!usersRequests.data.length"
-            class="text-center w-full pt-10">The database does not contain any records.</p>
+            <p v-if="!usersRequests.data.length" class="text-center w-full pt-10">The database does not contain any records.
+            </p>
             <table v-else class="min-w-full w-[900]">
                 <thead class="text-center bg-gray-300 border-b">
                     <tr>
@@ -47,11 +47,12 @@
                 </thead>
                 <tbody>
                     <tr v-for="(userRequests, index) of usersRequests.data"
-                        v-show="!userRequests.approvedBy || !onlyNotApproved"
-                         :class="{'bg-red-100': userRequests.status === 'rejected',
-                          'bg-green-100': userRequests.status === 'accpeted'}" >
+                        v-show="!userRequests.approvedBy || !onlyNotApproved" :class="{
+                            'bg-red-100': userRequests.status === 'rejected',
+                            'bg-green-100': userRequests.status === 'accpeted'
+                        }">
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            {{ index+1 }}
+                            {{ index + 1 }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                             {{ userRequests.logId }}
@@ -68,18 +69,20 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 ">
                             {{ userRequests.createdAt }}
                         </td>
-                        <td v-if="!userRequests.approvedBy" class=" py-4 whitespace-nowrap text-sm font-medium text-gray-900 ">
+                        <td v-if="!userRequests.approvedBy"
+                            class="text-center py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                             <PrimaryButton class="scale-90" @click.prevent="acceptRequest(userRequests.logId)">
                                 Accept
                             </PrimaryButton>
-                            <DangerButton class="scale-90" @click.prevent="rejectRequest(userRequests.logId)">Reject</DangerButton>
+                            <DangerButton class="scale-90" @click.prevent="rejectRequest(userRequests.logId)">Reject
+                            </DangerButton>
                         </td>
-                        <td v-else class=" py-4 whitespace-nowrap text-center font-medium text-gray-900 ">
+                        <td v-else class="text-center py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                             <SecondaryButton class="scale-90" @click.prevent="undoRequest(userRequests.logId)">
                                 Undo
                             </SecondaryButton>
                             <DangerButton v-show="userRequests.status === 'rejected'" class="scale-90"
-                                                @click.prevent="moveToTrash(userRequests.logId)">
+                                @click.prevent="moveToTrash(userRequests.logId)">
                                 to trash
                             </DangerButton>
 
@@ -121,7 +124,7 @@ const onlyNotApproved = ref(false)
 
 function acceptRequest(requestId) {
     router.post(route('request.accept'), {
-        'action' : 'accpet',
+        'action': 'accpet',
         'requestId': requestId,
 
     });
@@ -129,7 +132,7 @@ function acceptRequest(requestId) {
 
 function rejectRequest(requestId) {
     router.post(route('request.accept'), {
-        'action' : 'reject',
+        'action': 'reject',
         'requestId': requestId,
 
     });
@@ -137,13 +140,13 @@ function rejectRequest(requestId) {
 
 function undoRequest(requestId) {
     router.post(route('request.accept'), {
-        'action' : 'undo',
+        'action': 'undo',
         'requestId': requestId,
     });
 }
 
 function moveToTrash(requestId) {
- router.delete(route('request.toTrash', requestId));
+    router.delete(route('request.toTrash', requestId));
 }
 
 
