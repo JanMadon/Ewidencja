@@ -38,7 +38,7 @@ return [
     'guards' => [
         'web' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => env('LOGIN_PROVIDER', 'users'),
         ],
     ],
 
@@ -63,6 +63,14 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
+        ],
+
+        'usersLdap' => [
+            'driver' => 'ldap',
+            //'model' => LdapRecord\Models\OpenLDAP\User::class,
+            'model' => App\Ldap\UserLdap::class,
+            'rules' => [],
+            'scopes' => [],
         ],
 
         // 'users' => [

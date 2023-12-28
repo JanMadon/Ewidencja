@@ -28,6 +28,7 @@ class LoginRequest extends FormRequest
     {
         return [
             'email' => ['required', 'string', 'email'],
+            //'name' => ['required', 'string'],
             'password' => ['required', 'string'],
         ];
     }
@@ -41,7 +42,21 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        if(env('LOGIN_PROVIDER') === "usersLdap") {
+            $credentials = [
+                'mail' => $this->email,
+                'password' => $this->password,
+            ];
+        } else {
+            $credentials = [
+                'email' => $this->email,
+                'password' => $this->password,
+            ]; 
+        }
+
+        
+
+        if (!Auth::attempt($credentials, $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([

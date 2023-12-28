@@ -33,11 +33,11 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {   
-        if($request->user() && $request->user()->employee()) {
-            $data = $request->user()->employee();
-        } else {
+         if($request->user() && $request->user()->employee()) {
+             $data = $request->user()->employee();
+         } else {
             $data = $request->user();
-        }
+         }
 
         return [
             ...parent::share($request),
