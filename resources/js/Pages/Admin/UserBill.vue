@@ -23,7 +23,7 @@
                         <thead class="bg-gray-400 text-center border">
                             <tr>
                                 <th colspan="2" class="text-l font-medium px-6 py-4 text-center border-2">
-                                    Summary - [Month]
+                                    Monthly summary
                                     <p v-if="data.errors" class="text-sm text-red-600">User has {{ data.errors }} error(s) in
                                         the selected period</p>
                                 </th>

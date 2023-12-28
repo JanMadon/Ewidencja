@@ -1,7 +1,7 @@
 <template>
     <nav class="w-[200px]">
         <div class="h-[80px] px-3 flex justify-center gap-3">
-            <Link :href="route('dashboard')" class="flex flex-col items-center">
+            <Link :href="route('home')" class="flex flex-col items-center">
                 <ApplicationLogo class="block w-auto fill-current text-gray-800" />
                <p> Ewidecja </p>
             </Link>
@@ -9,6 +9,7 @@
         <div class="px-3">
             <!-- <CreateNewDropdown /> -->
             <div v-if="$page.props.auth.user.is_admin" class="py-3 ">
+            <!-- <div  class="py-3 "> -->
                 <!-- <pre>{{$page.props.auth.user.is_admin}}</pre> -->
                 <!-- <NavLink :href="route('dashboard')" :active="$page.props.route_name === 'dashboard'">Dashboard</NavLink> -->
                 <NavLink :href="route('dashboardAdmin')" :active="$page.props.route_name === 'dashboardAdmin'">Admin Dashboard</NavLink>
@@ -19,8 +20,8 @@
                 <NavLink :href="route('users.hostory')" :active="$page.props.route_name === 'users.hostory'">History</NavLink>
 
             </div>
-            <!-- <div v-else class="py-3 "> -->
-            <div class="py-3 ">
+            <div v-else class="py-3" v-show=" $page.props.route_name !== 'dashboard'">
+            <!-- <div class="py-3 "> -->
                 <NavLink :href="route('dashboardUser')" :active="$page.props.route_name === 'dashboardUser.period'">
                     User Dashboard
                 </NavLink>
@@ -28,7 +29,6 @@
                 <NavLink :href="route('my.requests')" :active="$page.props.route_name === 'my.requests'">My requests</NavLink>
                 <NavLink :href="route('my.trash')" :active="$page.props.route_name === 'my.trash'">Trash</NavLink>
             </div>
-
         </div>
     </nav>
 </template>

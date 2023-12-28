@@ -11,7 +11,7 @@
                         class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500   focus:ring-2">
                     <label for="checked-checkbox" class="ms-2 text-sm font-medium text-gray-900">Show only active</label>
                 </div>
-                <PrimaryButton @click.prevent="createNewUser">create new user</PrimaryButton>
+                <PrimaryButton @click.prevent="createNewUser">create new employee</PrimaryButton>
             </div>
         </nav>
         <div class="flex-1 overflow-auto">

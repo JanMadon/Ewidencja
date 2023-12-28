@@ -31,6 +31,9 @@
                             User name
                         </th>
                         <th class="text-sm font-medium text-gray-900 px-6 py-4 text-center">
+                            Date-time
+                        </th>
+                        <th class="text-sm font-medium text-gray-900 px-6 py-4 text-center">
                             Approved by
                         </th>
                         <th class="text-sm font-medium text-gray-900 px-6 py-4 text-center">
@@ -59,6 +62,9 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                             {{ userRequests.userName ?? 'unown, id=' + userRequests.userId }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 ">
+                            {{ userRequests.date_time }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 ">
                             {{ userRequests.approvedBy }}

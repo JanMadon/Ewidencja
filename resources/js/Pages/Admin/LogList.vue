@@ -5,7 +5,7 @@
             <h1 class="font-semibold text-2xl text-gray-800 leading-tight">Recent raw logs</h1>
         </template>
         <nav class="flex justify-between items-center">
-            <div>
+            <div v-if="first && last">
                 <p>first: {{ first.date_time }} </p>
                 <p>last: {{ last.date_time }}</p>
             </div>
@@ -48,7 +48,7 @@
                             {{ log.employee_id }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 ">
-                            {{ log.user ? log.user.name : 'unknown' }}
+                            {{ log.employee ? log.employee.name : 'unknown' }}
 
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 ">

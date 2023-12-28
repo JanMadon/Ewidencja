@@ -19,24 +19,27 @@
                             <input v-model="formData.id" type="number" id="id"
                                 class="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
                                 placeholder="id" />
+                            <p class="text-red-500">{{ formData.errors.id ? formData.errors.id : '' }}</p>
                         </div>
                         <div class="mb-4">
                             <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Name:</label>
                             <input v-model="formData.name" type="text" id="name"
                                 class="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-                                placeholder="name" required  />
+                                placeholder="name" required />
+                            <p class="text-red-500">{{ formData.errors.name ? formData.errors.name : '' }}</p>
+
                         </div>
                         <div class="mb-4">
                             <label for="firstname" class="block text-gray-700 text-sm font-bold mb-2">Firstname:</label>
                             <input v-model="formData.firstname" type="text" id="name"
                                 class="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-                                placeholder="firstname" required  />
+                                placeholder="firstname" required />
                         </div>
                         <div class="mb-4">
                             <label for="lastname" class="block text-gray-700 text-sm font-bold mb-2">Lastname:</label>
                             <input v-model="formData.lastname" type="text" id="name"
                                 class="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-                                placeholder="lastname" required  />
+                                placeholder="lastname" required />
                         </div>
 
 
@@ -48,7 +51,8 @@
                             <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
                             <input v-model="formData.email" type="email" id="email"
                                 class="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-                                placeholder="email" required  />
+                                placeholder="email" required />
+                            <p class="text-red-500">{{ formData.errors.email ? formData.errors.email : '' }}</p>
                         </div>
 
                         <div class="flex flex-col text-gray-700 text-sm">

@@ -32,7 +32,7 @@ Route::get('/', function () {
 });
 
 Route::controller(AdminController::class)
-    ->middleware(['auth', 'verified', 'admin'])
+    ->middleware(['auth', 'verified', 'admin', 'login'])
     ->group(function(){
         Route::get('/admin-dashboard', 'dashboard')
         ->name('dashboardAdmin');
@@ -74,7 +74,7 @@ Route::controller(AdminController::class)
     });
 
 Route::controller(UserController::class)
-->middleware(['auth', 'verified'])
+->middleware(['auth', 'verified', 'login'])
 ->group(function(){
     Route::get('/user-dashboard', 'getBill')
         ->name('dashboardUser');
@@ -97,7 +97,7 @@ Route::controller(UserController::class)
 
 
 Route::controller(LogController::class)
-    ->middleware(['auth', 'verified', 'admin'])
+    ->middleware(['auth', 'verified', 'admin', 'login'])
     ->group(function(){
         Route::get('/log', 'list')
         ->name('log.list');

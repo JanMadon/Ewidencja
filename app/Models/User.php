@@ -5,14 +5,19 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
+use PharIo\Manifest\Email;
 use Spatie\LaravelIgnition\FlareMiddleware\AddLogs;
 
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+
+    public $is_admin = true;
 
     /**
      * The attributes that are mass assignable.
@@ -45,11 +50,13 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function addedLogs(): HasMany{
-        return $this->hasMany(AddLogs::class,'employee_id', 'id');
+    /**
+    * @return Employee
+    */
+    public function employee() 
+    {
+        return Employee::where('email', Auth::user()->email)->first();
     }
 
-    public function xxx(): HasMany{
-        return $this->hasMany(RawLogs::class,'employee_id', 'id');
-    }
+    
 }

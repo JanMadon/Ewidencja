@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class Admin
+class Login
 {
     /**
      * Handle an incoming request.
@@ -15,14 +15,10 @@ class Admin
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
-    {
-        
-        // if(Auth::user()->is_admin) {
-        // return $next($request);
-        // } 
-        if(Auth::user()->employee()->is_admin) {
+    { 
+        if(Auth::user()->employee()) {
             return $next($request);
-            } 
+        } 
 
         abort(401); // nie masz uprawień do zaosobu 
 

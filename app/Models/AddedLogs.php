@@ -10,8 +10,4 @@ class AddedLogs extends Model
 {
     use HasFactory;
     // protected $fillable = ['id'];
-
-    public function user(): BelongsTo{
-        return $this->belongsTo(User::class,'id', 'employee_id');
-    }
 }

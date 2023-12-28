@@ -11,7 +11,7 @@
             <p>...</p>
         </nav>
         <div class="flex-1 overflow-auto">
-            <p v-if="!daysData.length" class="text-center pt-10">The database does not contain any records.</p>
+            <p v-if="!Object.keys(daysData).length" class="text-center pt-10">The database does not contain any records.</p>
             <table v-else class="min-w-full w-[900]">
                 <thead class="bg-gray-200 border-b">
                     <tr>

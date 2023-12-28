@@ -2,7 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Employee;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Middleware;
 use Tightenco\Ziggy\Ziggy;
@@ -30,11 +32,17 @@ class HandleInertiaRequests extends Middleware
      * @return array<string, mixed>
      */
     public function share(Request $request): array
-    {
+    {   
+        if($request->user() && $request->user()->employee()) {
+            $data = $request->user()->employee();
+        } else {
+            $data = $request->user();
+        }
+
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user(),
+                'user' => $data,
             ],
             'route_name' => Route::currentRouteName(),
             'ziggy' => fn () => [

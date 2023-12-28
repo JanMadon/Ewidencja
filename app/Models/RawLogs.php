@@ -10,14 +10,9 @@ class RawLogs extends Model
 {
     use HasFactory;
 
-    public function user(): BelongsTo
+    public function employee(): BelongsTo
     {
     
-        return $this->belongsTo(User::class, 'employee_id', 'id');
-    }
-
-    public function user2(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(Employee::class, 'employee_id', 'id');
     }
 }

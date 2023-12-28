@@ -10,9 +10,9 @@ class LogController extends Controller
 {
     public function list()
     {
-        $logs = RawLogs::with('user')->orderBy('date_time', 'desc');
-
-        $first = RawLogs::with('user')->orderBy('date_time')->first();
+        $logs = RawLogs::with('employee')->orderBy('date_time', 'desc');
+        $first = RawLogs::with('employee')->orderBy('date_time')->first();
+        
         $numOfLogs = $logs->count();
         $last = $logs->first();
         $logs = $logs->simplePaginate(20);

@@ -11,12 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('firstname')->default('firstname')->nullable()->after('name');
-            $table->string('lastname')->default('lastname')->nullable()->after('firstname');
-            $table->boolean('is_premia')->default(false)->after('lastname');
-            $table->boolean('is_active')->default(false)->after('is_premia');
-            $table->boolean('is_admin')->default(false)->after('is_active');
+        Schema::create('employees', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->string('firstname')->default('firstname')->nullable();
+            $table->string('lastname')->default('lastname')->nullable();
+            $table->boolean('is_premia')->default(false);
+            $table->boolean('is_active')->default(false);
+            $table->boolean('is_admin')->default(false);
+            $table->date('working_since')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -25,12 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('firstname');
-            $table->dropColumn('lastname');
-            $table->dropColumn('premia');
-            $table->dropColumn('status');
-            $table->dropColumn('privileges');
-        });
+        Schema::dropIfExists('employees');
     }
 };
