@@ -143,6 +143,14 @@
       ! Ważne jest aby podczas rejestracji podał dokładnie taki sam e-mail jaki jest w tabeli employees
       Gdy Użytkownik zapomni hasła, admin musi go usunąć z tabeli users, po czym użytkownik powtarza rejestracje (requesy są przetrzymywane w tabeli employees dlatego żadne dane nie zostaną utracone)
 
+      Podane dane w pliku .env pozwalają na połącznie z serverem testowym ldap: https://www.forumsys.com/2022/05/10/online-ldap-test-server/
+            po połączeniu można spróbować logowania na dane: 
+            email:
+                  tesla@ldap.forumsys.com lub newton@ldap.forumsys.com
+
+            hasło:
+                        password 
+
 
 ### Zaciąganie danych z urządzenia 
       Plik list.txt (def.name LOG_FILE_NAME) należy umieścić w storage/app
