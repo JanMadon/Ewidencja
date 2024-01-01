@@ -4,8 +4,9 @@ import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { Head, Link, router, useForm } from '@inertiajs/vue3';
 
 defineProps({
     canResetPassword: {
@@ -14,6 +15,7 @@ defineProps({
     status: {
         type: String,
     },
+    register: Boolean,
 });
 
 const form = useForm({
@@ -27,6 +29,10 @@ const submit = () => {
         onFinish: () => form.reset('password'),
     });
 };
+
+function toRegister() {
+    router.visit(route('register'))
+}
 </script>
 
 <template>
@@ -76,7 +82,7 @@ const submit = () => {
                 </label>
             </div>
 
-            <div class="flex items-center justify-end mt-4">
+            <div class="flex flex-row-reverse items-center justify-between mt-4">
                 <!-- <Link
                     v-if="canResetPassword"
                     :href="route('password.request')"
@@ -84,10 +90,16 @@ const submit = () => {
                 >
                     Forgot your password?
                 </Link> -->
+                
 
                 <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Log in
                 </PrimaryButton>
+
+                <SecondaryButton v-if="register" @click.prevent="toRegister">
+                    Register
+                </SecondaryButton>
+                
             </div>
         </form>
     </GuestLayout>

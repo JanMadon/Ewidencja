@@ -1,80 +1,159 @@
 
-## Rozpoczęcie projektu
-dodałem usera do grupy www-data, aby móc dodawać plik list.txt ko katalogu /storage/app
-- chwilowo Użytkownicy są logowani w wytwarzani w standardowym mechanizmie devkita laravela...
+# Ewidencja czsu pracy
 
-- chwilowo Użytkownicy są logowani w wytwarzani w standardowym mechanizmie devkita laravela
-- przy uruchamianiu projektu pamiętaj o:
-      * sudo chmod -R 775 /var/www/html/ewidecja/storage // uprawnienia
-      * sudo chown -R www-data:www-data /var/www/html/ewidecja/storage //
-      * sudo a2enmod rewrite // włącz moduł rewrite
-      * php artisan key:generate //wygeneruj klucz szyfrowania
-      * konfiguracja apacha: https://ubunlog.com/pl/laravel-framework-php-ubuntu/
-      * systemctl restart apache2
+## Opis 
 
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+      Program służy do prowadzenia ewidencji czasu pracowników, dzięki rekordom jakie powstają przy 'odbijaniu' się pracowników na urządzeniu przy wejściu do pracy.
+      Program posiada dwa główne widoki w zależności od przywilejów zalogowanego użytkownika tj. admin czy user.
+      User posiada informacje o swoich logach (odbiciach) z podziałem na dni i miesiące. Nieprawidłowości w rejestrze logów (gdy pracownik zapomni się odbić) są odpowiednio oznaczane. User może wysłać prośbę o dodanie zapisu w danym dniu i czasie.
+      Admin posiada informacje o obecnych pracownikach w czasie rzeczywistym (wymagane ciągła aktualizacja logów // szczegóły w ## Uruchamianie -> Zaciąganie danych z urządzenia -> przez komodę)
+      Admin może dodawać, edytować, usuwać użytkowników. Ustalać pensję, akceptować/odrzucać prośby użytkowników lub dodawać własne rekordy.
+      Admin ma kontrole nad tabelą raw_logs może czyścić i robić upload rekordów do bazy danych (z poziomu przeglądarki).
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
 
-## About Laravel
+      Najważniejsze informacje o tabelach w bazie danych:
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+      - raw_logs - surowe dany z urządzania kolumny: employee_id(id pracownika), date_time(data i czas rekordu)
+      - added_logs - prośby o dodanie/ dodane logi (w zależności od ustawionych flag is_approved, is_active itd..) 
+      - deleted_logs - jeśli w tej tabeli i tabeli "raw-logs" date-time się powtórzą rekord nie jest brany pod uwagę (tabela naradzie nie jest wykorzystywana).
+      - employees - tabela u pracownikami, ważne jest aby id danego rekordu odpowiadało id w urządzeniu, email musi być taki jak przy logowaniu, określa przywileje pracownika/usera.
+      - salaries - pensje, przez kogo nadana dla kogo i od kiedy
+      - users - name, email, password zahashowany. Tabela jest wykorzystywana gdy logowanie następuje przez bazę danych.
+      - migrations - tabela frameworka zapisuje zmiany w strukturze bazy danych.
+      - password_reset_tokens i personal_access_tokens - tabele frameworka, wykorzystywane przy logowaniu przez bazę danych.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Wymagania/środowisko
 
-## Learning Laravel
+### php >= 8.2
+       Przez [apt install] domyślnie zainstalowało 8.1 wiec zainstalowałem z tej strony: https://php.watch/articles/install-php82-ubuntu-debian (na 8.1 później są problemy z instalowaniem zależności composera)
+### composer
+      https://getcomposer.org/doc/00-intro.md
+            php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+            php -r "if (hash_file('SHA384', 'composer-setup.php') === '669656bab3166a7aff8a7506b8cb2d1c292f042046c5a994c43155c0be6190fa0355160742ab2e1c88d40d5be660b410') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+            sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+### nodejs z npm (npm jest zazwyczaj instalowany z node)
+      curl -sL https://deb.nodesource.com/setup_lts.x | sudo -E bash
+      sudo apt-get install -y nodejs
+      node -v
+### apache2 + mariaDB
+      sudo apt install apache2
+      sudo apt install php libapache2-mod-php
+      sudo apt install mariadb-server
+      sudo apt install php-mysql   (dla obsługi MySQL/MariaDB)
+      sudo mysql_secure_installation (konfiguracja)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- plik index.php znajduję się w ewidencja/public 
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- plik konfiguracyjny apacha wyglądał mniej wiecej tak: 
+      <VirtualHost *:80>
+            ServerAdmin webmaster@localhost
+            DocumentRoot /var/www/html/ewidencja/public
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+            <Directory /var/www/html/ewidecja>
+                  Options Indexes FollowSymLinks
+                  AllowOverride All
+                   Require all granted
+            </Directory>
 
-## Laravel Sponsors
+            ErrorLog ${APACHE_LOG_DIR}/error.log
+            CustomLog ${APACHE_LOG_DIR}/access.log combined
+      </VirtualHost>
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Instalacja
+      1. Sklonuj repozytorium gita
+            git colne .....
 
-### Premium Partners
+      2. Przejdź do folderu projektu:
+            cd Ewidencja
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+      3. Zainstaluj zależności PHP poprzez Composer:
+            composer install
+      
+      4. Zainstaluj zależności JavaScript poprzez NPM:
+            npm install
 
-## Contributing
+## Konfiguracja:  
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+      1. Skopiuj plik .env.example do .env:
+            cp .env.example .env
 
-## Code of Conduct
+      2. Wygeneruj klucz aplikacji Laravel:
+            php artisan key:generate
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+            - ja musiałem jeszcze włączyć moduł rewrite:
+                  sudo a2enmod rewrite
+      
+      3. Skonfiguruj dane bazy danych w pliku .env.
+      4. Skonfiguruj sposobu logowania LOGIN_PROVIDER=users (lub =usersLdap) więcej w //Uruchamianie. 
+      5  Skonfiguruj połącznie ldap (w pliką dane wpisane pochodzą z serwera testowego) 
+                  https://www.forumsys.com/2022/05/10/online-ldap-test-server/
+            - testowanie połączenia ldap:
+                  php artisan ldap:test
 
-## Security Vulnerabilities
+      !!! Pamiętaj  aby nadać odpowiednie uprawnienia dla katalogu storage
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Tworzenie bazy danych / Kompilacja zasobów:
+      1. Uruchom migracje bazy danych: (zostanie stworzona baza o nazwie zdefiniowanej w env. DB_DATABASE=)
+            php artisan migrate
+      
+      2. Stwórz  plik users.txt w katalogu  storage/app oraz wypełnij go danymi pracowników w ten sposób:
+            #|id|name|email|firstname|lastname|is_premia|is_active|is_admin
+            1|kowalski|kowalski@example.pl|Jan|Kowalski|0|1|1
 
-## License
+            - pola id, name, email są wymagane, resztę będzie można później modyfikować, oraz dodawać kolejnych użytkowników 
+                  !!! należy stworzyć  przynajmniej jednego admina tj. is_admin == 1
+                  !!! email musi być poprawny - będzie  służył do identyfikacji przy logowaniu 
+                  !!! id musi być takie jakie jest przypisane do pracownika w urządzeniu 'odbijającym'
+            
+      3. WWypchnij dane userow do bazy danych: 
+            php artisan app:upload-users
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+ - Kompilacja:
+      w trybie produkcyjnym: 
+            npm run build
+
+      w trybie deweloperskim:
+            npm run dev
+      
+      !!! W trybie produkcyjnym należy w pliku .env APP_DEBUG ustawić na false
+
+## Uruchamianie
+
+      Gdyby były jakieś problemy związane z uruchomieniem aplikacji a apache, można spróbować użyć servera laravela:
+            php artisan serve
+      
+      Po uruchomieniu aplikacji i przejściu na skonfigurowany adres np: http://localhost zostaniemy automatycznie przekierowaniu na stronę logowanie: localhost/login
+
+      Aby użytkownik mógł korzystać z systemu jego dane muszą być w bazie danych(## Tworzenie bazy danych / Kompilacja zasobów 2 i 3 pkt.) tabeli employess, podczas logowania następuje skojarzenie podanego emaila z danymi w ww. tabeli. Samo logowanie może przebiegać dwoma sposobami (nie jednocześnie) przez połączenie z serwerem ldap lub klasycznie przez rejestracje użytkownika i zapisanie jego danych w bazie danych.
+
+
+### logowanie przez ldap
+      !!! w pliku .env należy ustawić LOGIN_PROVIDER=usersLdap
+
+      Jeśli uda się poprawnie skonfigurować połączenie z serwerem ldap należy podać email oraz password, które wykorzystuje się do logowania np. na pocztę.
+      Jeśli serwer ldap zwróci obiekt użytkownika, jednak nie będzie on istniał w tabeli employees (email nie będzie się zgadzał). System zaloguje go, jednak wyświetli mu jedynie informacje o kontakcie z adminem.
+      Jeśli użytkownik nie istnieje dla servera ldap, logowanie nie powiedzie się.
+
+
+### logowanie przez baze danych (rejstracje użytkowników) 
+      !!! w pliku .env należy ustawić LOGIN_PROVIDER=users
+
+      Użytkownik aby mógł korzystać z systemu musi najpierw się zarejestrować (strona logowania -> button REGISTER)
+      ! Ważne jest aby podczas rejestracji podał dokładnie taki sam e-mail jaki jest w tabeli employees
+      Gdy Użytkownik zapomni hasła, admin musi go usunąć z tabeli users, po czym użytkownik powtarza rejestracje (requesy są przetrzymywane w tabeli employees dlatego żadne dane nie zostaną utracone)
+
+
+### Zaciąganie danych z urządzenia 
+      Plik list.txt (def.name LOG_FILE_NAME) należy umieścić w storage/app
+      Istnieją dwa sposoby na zrobienie upload danych
+            - przez system:
+              Admin loguje się do aplikacji Log List -> button UPlOAD LOG
+
+            - prze komodę:
+              php artisan app:upload-logs
+             * skrypt można zapętlić dane przed upload są walidowane więc nic szczególnego nie powinno się stać. 
+
+
+      Plik nie musi być szczególnie przygotowany, rekordy mogą być z dowolnego okresu i się powtarzać.
+      Testowałem na 30k rekordów i nie było problemów, upload przebiega sprawnie.
