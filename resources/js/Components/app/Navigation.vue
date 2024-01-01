@@ -3,7 +3,7 @@
         <div class="h-[80px] px-3 flex justify-center gap-3">
             <Link :href="route('home')" class="flex flex-col items-center">
                 <ApplicationLogo class="block w-auto fill-current text-gray-800" />
-               <p> Ewidecja </p>
+               <p> Ewidencja </p>
             </Link>
         </div>
         <div class="px-3">
