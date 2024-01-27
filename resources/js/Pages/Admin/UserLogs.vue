@@ -57,10 +57,11 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 ">
                             {{ dayData.logs[dayData.logs.length - 1] }}
                         </td>
-                        <td @click="showModal([index, dayData])"
+                        <td @click="() => showModal([index, dayData])"
                             class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 transition duration-300 ease-in-out hover:bg-blue-100 cursor-pointer text-center"
                             :class="{ 'bg-red-200': dayData.logs.length % 2 }">
                             {{ dayData.logs.length }} {{ dayData.logs.length % 2 ? "(error)" : "" }}
+                            <!-- {{ dayData }} -->
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 ">
                             {{ dayData.work_time }}
@@ -145,7 +146,6 @@
                 <h2 class="text-lg font-medium text-gray-900">
                     Add new record for user: {{ user.name }}
                 </h2>
-
                 <form>
                     <div class="flex justify-evenly my-10">
                         <div class="flex flex-col text-center">
@@ -157,18 +157,12 @@
                             <input v-model=formData.newRecord type="time" id="time2" name="time" required />
                         </div>
                     </div>
-
                     <div class="mt-6 flex justify-end mt-20">
                         <SecondaryButton @click.prevent="closeModal">Cancel</SecondaryButton>
                         <PrimaryButton @click.prevent="addNewLog(dayData)" class="ms-3">Add record</PrimaryButton>
                     </div>
                 </form>
-
-
-
             </div>
-
-
         </Modal>
     </AuthenticatedLayout>
 </template>
@@ -195,12 +189,13 @@ const formData = useForm({
 
 const isVisible = ref(false);
 const addNewRecordModal = ref(false);
-const dayData = ref('');
+const dayData = ref();
 
 watch(() => props.recordAdded, showAlert)
 
-function showModal(dayData) {
-    this.dayData = dayData
+function showModal(dayData1) {
+    console .log(dayData1);
+    dayData.value = dayData1
     isVisible.value = true;
 }
 

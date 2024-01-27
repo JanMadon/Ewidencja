@@ -88,9 +88,9 @@ class AdminController extends Controller
         $user = Employee::find($id);
         $user->id = $request->id;
         $user->name = $request->name;
-        // $user->emial = $request->email;
-        // $user->firstname = $request->firstname;
-        // $user->lastname = $request->lastname;
+        $user->email = $request->email;
+        $user->firstname = $request->firstname;
+        $user->lastname = $request->lastname;
         $user->is_active = $request->isActive;
         $user->is_admin = $request->isAdmin;
         $user->is_premia = $request->isPremia;

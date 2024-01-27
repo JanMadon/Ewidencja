@@ -83,11 +83,7 @@ import { ref, onMounted } from 'vue';
 import ChangeMonth from '@/Components/app/ChangeMonth.vue'
 import DangerButton from '@/Components/DangerButton.vue';
 
-
-
-
 const setTime = ref('')
-
 const props = defineProps({
     logs: Object,
     first: Object,
